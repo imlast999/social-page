@@ -281,7 +281,7 @@ export default function SocialLinksMatrix() {
 
     const triggerSuccess = () => {
       setCopiedEth(true)
-      setToastMessage(`wallet ethereum copiada: ${ethAddress}`)
+      setToastMessage(`ethereum wallet copied: ${ethAddress}`)
 
       if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current)
       toastTimeoutRef.current = setTimeout(() => {
@@ -389,7 +389,7 @@ export default function SocialLinksMatrix() {
       {/* Links placed randomly with 0 overlaps */}
       {SOCIAL_ITEMS.map((item) => {
         const isEth = item.id === 'ethereum'
-        const currentText = isEth && copiedEth ? 'copiado!' : item.label
+        const currentText = isEth && copiedEth ? 'copied!' : item.label
         const letters = currentText.split('')
 
         const wordElement = (
@@ -436,7 +436,7 @@ export default function SocialLinksMatrix() {
               type="button"
               onClick={handleCopyEthereum}
               className="outline-none focus:outline-none cursor-pointer bg-transparent border-none p-0 m-0 text-left"
-              aria-label="Copiar dirección ethereum"
+              aria-label="copy ethereum address"
               {...commonProps}
             >
               {wordElement}
@@ -451,7 +451,7 @@ export default function SocialLinksMatrix() {
             target="_blank"
             rel="noopener noreferrer"
             className="outline-none focus:outline-none no-underline block text-left"
-            aria-label={item.label}
+            aria-label={`open ${item.label}`}
             {...commonProps}
           >
             {wordElement}
