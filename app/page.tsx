@@ -102,8 +102,8 @@ const SOCIAL_ITEMS: SocialItem[] = [
     id: 'fomo',
     label: 'fomo',
     href: 'https://fomo.family/r/imlast999',
-    brandColor: '#FF6F00',
-    glowColor: 'rgba(255, 111, 0, 0.4)',
+    brandColor: '#F0F6FC',
+    glowColor: 'rgba(240, 246, 252, 0.3)',
   },
 ]
 
@@ -529,12 +529,6 @@ export default function SocialLinksMatrix() {
     <main
       ref={containerRef}
       className="relative min-h-screen w-full bg-[#050508] overflow-hidden select-none"
-      style={{
-        minHeight:
-          mounted && typeof window !== 'undefined' && window.innerWidth < 640
-            ? '1200px'
-            : '100vh',
-      }}
     >
       {/* Interactive Space Background Canvas */}
       <canvas
@@ -562,11 +556,14 @@ export default function SocialLinksMatrix() {
               } as React.CSSProperties
             }
           >
-            {/* Idea 2: Soft Brand Spotlight behind word on hover */}
+            {/* Soft Brand Spotlight behind word on hover */}
             <div
               className="pointer-events-none absolute -inset-6 -z-10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-400 ease-out"
               style={{
-                background: `radial-gradient(circle, ${item.glowColor} 0%, transparent 70%)`,
+                background:
+                  item.id === 'tiktok'
+                    ? 'radial-gradient(ellipse at center, rgba(37, 244, 238, 0.3) 0%, rgba(254, 44, 85, 0.3) 60%, transparent 80%)'
+                    : `radial-gradient(circle, ${item.glowColor} 0%, transparent 70%)`,
               }}
             />
 
@@ -576,18 +573,24 @@ export default function SocialLinksMatrix() {
                 'fancy-word inline-flex items-center text-4xl sm:text-5xl md:text-6xl font-medium lowercase tracking-normal transition-colors duration-250',
                 isEth && copiedEth
                   ? 'text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.5)]'
-                  : 'text-white group-hover:text-[var(--brand-color)]'
+                  : 'text-white'
               )}
             >
-              {letters.map((char, i) => (
-                <span key={i} className="scatter-outer inline-block">
-                  <span className="scatter-inner inline-block">
-                    <span className="inline-block transition-transform duration-200">
-                      {char}
+              {letters.map((char, i) => {
+                let hoverColor = 'group-hover:text-[var(--brand-color)]'
+                if (item.id === 'tiktok') {
+                  hoverColor = i < 3 ? 'group-hover:text-[#25F4EE]' : 'group-hover:text-[#FE2C55]'
+                }
+                return (
+                  <span key={i} className="scatter-outer inline-block">
+                    <span className="scatter-inner inline-block">
+                      <span className={cn('inline-block transition-colors duration-200', hoverColor)}>
+                        {char}
+                      </span>
                     </span>
                   </span>
-                </span>
-              ))}
+                )
+              })}
             </span>
           </div>
         )
