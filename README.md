@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Social Page — imlast999
 
-## Getting Started
+Página minimalista de enlaces sociales interactivos con animación de letras dispersas mediante GSAP y distribución orgánica sin solapamiento.
 
-First, run the development server:
+## 🔗 Redes incluidas
+- `instagram`
+- `twitter`
+- `tiktok`
+- `telegram`
+- `twitch`
+- `spotify`
+- `steam`
+- `roblox`
+- `github`
+- `ethereum` *(Copia automática de dirección de wallet al portapapeles)*
+- `abstract`
+- `fomo`
 
+---
+
+## ⚡ Ejecución Local
+
+### Con 1 clic (Windows):
+Haz doble clic en `iniciar.bat` en la raíz de la carpeta. Se encarga de comprobar dependencias, arrancar el servidor y abrir el navegador.
+
+### Con terminal:
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+Abre [http://localhost:3000](http://localhost:3000).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Despliegue en Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Ve a [vercel.com](https://vercel.com) e inicia sesión con tu cuenta de GitHub.
+2. Haz clic en **"Add New..."** > **"Project"**.
+3. Selecciona e importa el repositorio: `imlast999/social-page`.
+4. Vercel detectará automáticamente la configuración de **Next.js**.
+5. Haz clic en **Deploy**. ¡Listo en menos de 1 minuto!
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🌐 Configuración de Dominio Personalizado (Digitalplat / Registrador)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Para conectar tu dominio registrado en Digitalplat a Vercel:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 1. Añadir el dominio en Vercel:
+1. En tu proyecto de Vercel, ve a **Settings** > **Domains**.
+2. Escribe tu dominio (ejemplo: `tudominio.com` o `subdominio.tudominio.com`) y haz clic en **Add**.
+3. Selecciona si quieres redirigir `www.tudominio.com` a `tudominio.com` (recomendado).
 
-## Deploy on Vercel
+### 2. Configurar los registros DNS en el panel de Digitalplat:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+#### Opción A: Registro para dominio principal (`tudominio.com`)
+- **Tipo:** `A`
+- **Nombre / Host:** `@`
+- **Valor / Destino:** `76.76.21.21`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+#### Opción B: Registro para `www` o subdominio (`www.tudominio.com` o `links.tudominio.com`)
+- **Tipo:** `CNAME`
+- **Nombre / Host:** `www` *(o `links`)*
+- **Valor / Destino:** `cname.vercel-dns.com`
+
+#### Opción C: Delegar Nameservers a Vercel (opcional para gestión automática de SSL)
+En la sección de Servidores DNS de Digitalplat, reemplaza los nameservers actuales por:
+- `ns1.vercel-dns.com`
+- `ns2.vercel-dns.com`
+
+> Una vez guardados los registros DNS en Digitalplat, Vercel validará la configuración y generará automáticamente un certificado SSL HTTPS gratuito en cuestión de minutos.
