@@ -716,7 +716,7 @@ export default function SocialLinksMatrix() {
             terminal access
           </h2>
           <p className="text-xs sm:text-sm text-zinc-400 font-mono">
-            Type commands or tap any suggested chip below
+            Type 'help' to explore available commands
           </p>
         </div>
 

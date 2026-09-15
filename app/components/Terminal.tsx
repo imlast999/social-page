@@ -32,13 +32,13 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
     },
   ])
   const [isMatrixRunning, setIsMatrixRunning] = useState(false)
-  const terminalBodyRef = useRef<HTMLDivElement>(null)
+  const contentBodyRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Scroll ONLY the inside of the terminal container on new output (without moving the page viewport)
+  // Scroll ONLY the inner terminal container to bottom on new output (does NOT scroll the outer window)
   useEffect(() => {
-    if (terminalBodyRef.current) {
-      terminalBodyRef.current.scrollTop = terminalBodyRef.current.scrollHeight
+    if (contentBodyRef.current) {
+      contentBodyRef.current.scrollTop = contentBodyRef.current.scrollHeight
     }
   }, [history, isMatrixRunning])
 
@@ -115,12 +115,10 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           content: (
             <div className="space-y-2 text-zinc-300 text-xs sm:text-sm">
               <p className="text-white font-medium">
-                Hey! I'm <span className="text-emerald-400">imlast999</span>.
+                imlast999 / builder, crypto explorer & developer based in the digital void.
               </p>
               <p className="text-zinc-400 leading-relaxed">
-                Developer, gamer & crypto explorer building in the digital void.
-                Obsessed with high-performance minimalist aesthetics, creative web
-                animations, and quantitative systems.
+                Focused on quantitative systems, clean UI architecture, and Web3 infrastructure.
               </p>
               <p className="text-zinc-500">
                 Location: <span className="text-zinc-300">Cyberspace / Earth</span>
@@ -139,7 +137,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           content: (
             <div className="space-y-1.5 text-zinc-300 text-xs sm:text-sm">
               <p className="text-emerald-400 font-semibold mb-1">
-                Hardware & Workspace Rig:
+                [SYSTEM HARDWARE & RIG]:
               </p>
               <ul className="space-y-1 text-zinc-400">
                 <li>
@@ -171,7 +169,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           content: (
             <div className="space-y-2 text-zinc-300 text-xs sm:text-sm">
               <p className="text-emerald-400 font-semibold">
-                Tech Stack & Capabilities:
+                [TECH STACK & CAPABILITIES]:
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-zinc-400">
                 <div className="p-2 rounded-lg bg-zinc-900/60 border border-zinc-800/80">
@@ -181,21 +179,21 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
                   </span>
                 </div>
                 <div className="p-2 rounded-lg bg-zinc-900/60 border border-zinc-800/80">
-                  <span className="text-white font-medium block mb-0.5">Quantitative & Algo</span>
+                  <span className="text-white font-medium block mb-0.5">Web3 & Quantitative</span>
                   <span className="text-zinc-400 text-xs">
-                    MetaTrader 5, Python, Strategy Backtesting, Monte Carlo Simulation
+                    Python, MetaTrader 5, Solidity, Ethereum, Abstract L2
                   </span>
                 </div>
                 <div className="p-2 rounded-lg bg-zinc-900/60 border border-zinc-800/80">
-                  <span className="text-white font-medium block mb-0.5">Web3 & Systems</span>
+                  <span className="text-white font-medium block mb-0.5">Backend & Tooling</span>
                   <span className="text-zinc-400 text-xs">
-                    Ethereum, EVM Chains, Smart Contracts, Node.js, Linux CLI
+                    Node.js, Git, REST APIs, Vercel CI/CD, Linux CLI
                   </span>
                 </div>
                 <div className="p-2 rounded-lg bg-zinc-900/60 border border-zinc-800/80">
-                  <span className="text-white font-medium block mb-0.5">Mobile & UX</span>
+                  <span className="text-white font-medium block mb-0.5">Mobile & Systems</span>
                   <span className="text-zinc-400 text-xs">
-                    Android UI Customization, Minimalist Design, Audio Player Architecture
+                    Android, Kotlin, UI/UX Engineering, Clean Architecture
                   </span>
                 </div>
               </div>
@@ -211,10 +209,10 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           content: (
             <div className="space-y-2 text-zinc-300 text-xs sm:text-sm">
               <p className="text-emerald-400 font-semibold">
-                Navigating to Project Showcase:
+                [PROJECTS]: Navigating to Project Showcase...
               </p>
               <p className="text-zinc-400">
-                Scrolling down to holographic project cards...
+                Scrolling to holographic cards (LastEdge, Millionaire Sharks Club, SpotifyUI)...
               </p>
             </div>
           ),
@@ -231,7 +229,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           content: (
             <div className="space-y-1.5 text-zinc-300 text-xs sm:text-sm">
               <p className="text-emerald-400 font-semibold mb-1">
-                Connected Networks:
+                [CONNECTED NETWORKS]:
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 font-mono text-xs">
                 <a
@@ -295,7 +293,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           content: (
             <div className="space-y-1 text-zinc-300 text-xs sm:text-sm">
               <p className="text-emerald-400 font-semibold mb-1">
-                Reach Out:
+                [CONTACT CHANNELS]:
               </p>
               <p>
                 <span className="text-zinc-500 font-mono">Email:</span>{' '}
@@ -342,7 +340,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
               [sudo] password for visitor: **********
               <br />
               <span className="text-red-400">
-                imlast999 is not in the sudoers file. This incident has been logged.
+                Permission denied: imlast999 is not in the sudoers file. This incident has been logged and reported.
               </span>
             </div>
           ),
@@ -437,7 +435,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
 
         {/* Terminal Content Body */}
         <div
-          ref={terminalBodyRef}
+          ref={contentBodyRef}
           onClick={() => inputRef.current?.focus()}
           className="p-4 sm:p-5 font-mono text-xs sm:text-sm min-h-[260px] max-h-[440px] overflow-y-auto space-y-3 cursor-text"
         >
@@ -463,7 +461,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
               type="text"
               value={inputVal}
               onChange={(e) => setInputVal(e.target.value)}
-              placeholder="type a command... (e.g. help)"
+              placeholder="type 'help' to see commands..."
               className="flex-1 bg-transparent border-none outline-none text-white font-mono text-xs sm:text-sm placeholder:text-zinc-600 focus:ring-0 p-0"
               autoCapitalize="none"
               autoComplete="off"
