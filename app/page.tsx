@@ -149,10 +149,12 @@ export default function SocialLinksMatrix() {
   const itemRefs = useRef<Map<string, HTMLElement>>(new Map())
   const floatRefs = useRef<Map<string, HTMLElement>>(new Map())
   const [positions, setPositions] = useState<Record<string, ItemPos>>({})
+  const [heroHeight, setHeroHeight] = useState<number>(850)
   const [copiedEth, setCopiedEth] = useState(false)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
   const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const lastWidthRef = useRef<number>(0)
 
   // Mouse & Gyroscope position ref for smooth canvas parallax
   const mouseRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 })
@@ -264,9 +266,9 @@ export default function SocialLinksMatrix() {
     const isMobile = W < 640
     const isTablet = W < 1024 && !isMobile
 
-    // Keep links neatly inside the hero screen
+    // Keep links neatly inside the hero screen with adequate height
     const H = isMobile
-      ? Math.max(window.innerHeight - 100, 1100)
+      ? 1150
       : isTablet
       ? Math.max(window.innerHeight - 100, 850)
       : Math.max(window.innerHeight - 120, 700)
@@ -373,24 +375,38 @@ export default function SocialLinksMatrix() {
       }
     }
 
+    let maxBottom = 0
     const newPositions: Record<string, ItemPos> = {}
     placedList.forEach((p) => {
       newPositions[p.id] = { x: p.x, y: p.y }
+      if (p.y + p.h > maxBottom) {
+        maxBottom = p.y + p.h
+      }
     })
 
     setPositions(newPositions)
+    const neededHeight = isMobile
+      ? Math.max(window.innerHeight, maxBottom + 120)
+      : Math.max(window.innerHeight, 750)
+    setHeroHeight(neededHeight)
   }, [])
 
   useEffect(() => {
     setMounted(true)
+    lastWidthRef.current = window.innerWidth
     computeNonOverlappingPositions()
 
     let resizeTimer: NodeJS.Timeout
     const handleResize = () => {
-      clearTimeout(resizeTimer)
-      resizeTimer = setTimeout(() => {
-        computeNonOverlappingPositions()
-      }, 150)
+      const currentW = window.innerWidth
+      // Only recompute if width actually changed (not mobile vertical scroll / address bar collapse)
+      if (Math.abs(currentW - lastWidthRef.current) > 30) {
+        lastWidthRef.current = currentW
+        clearTimeout(resizeTimer)
+        resizeTimer = setTimeout(() => {
+          computeNonOverlappingPositions()
+        }, 150)
+      }
     }
 
     window.addEventListener('resize', handleResize)
@@ -563,10 +579,11 @@ export default function SocialLinksMatrix() {
       {/* ========================================================= */}
       <section
         ref={heroRef}
-        className="relative min-h-screen w-full flex flex-col justify-between"
+        style={{ minHeight: `${heroHeight}px` }}
+        className="relative w-full flex flex-col justify-between"
       >
         {/* Absolute Floating Links Container */}
-        <div className="relative w-full flex-1">
+        <div className="relative w-full" style={{ height: `${Math.max(heroHeight - 90, 600)}px` }}>
           {SOCIAL_ITEMS.map((item) => {
             const isEth = item.id === 'ethereum'
             const currentText = isEth && copiedEth ? 'copied!' : item.label
