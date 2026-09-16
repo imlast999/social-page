@@ -129,12 +129,16 @@ function ProjectCard({
     }
   }
 
-  // Right-offset stacking calculations
-  // offset: 0 = active, 1 = 1st behind (peeking right), 2 = 2nd behind (peeking further right)
-  const translateX = offset * 24
-  const translateY = offset * 10
-  const scale = 1 - offset * 0.04
-  const opacity = offset === 0 ? 1 : offset === 1 ? 0.75 : 0.45
+  // Right-offset stacking calculations (Clearly visible on the right of the front card)
+  // offset: 0 = front active card, 1 = 1st card behind to the right, 2 = 2nd card behind further to the right
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 640 : false
+  const stepX = isMobile ? 28 : 46
+  const stepY = isMobile ? 8 : 12
+
+  const translateX = offset * stepX
+  const translateY = offset * stepY
+  const scale = 1 - offset * 0.035
+  const opacity = offset === 0 ? 1 : offset === 1 ? 0.78 : 0.48
   const zIndex = 30 - offset * 10
 
   return (
@@ -151,10 +155,10 @@ function ProjectCard({
         opacity,
         transformOrigin: 'left center',
       }}
-      className={`absolute left-0 top-0 w-[calc(100%-48px)] sm:w-[calc(100%-60px)] rounded-2xl bg-[#09090e]/95 border transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] p-6 sm:p-8 backdrop-blur-2xl shadow-[0_15px_40px_rgba(0,0,0,0.85)] flex flex-col justify-between overflow-hidden ${
+      className={`absolute left-0 top-0 w-[calc(100%-60px)] sm:w-[calc(100%-96px)] rounded-2xl bg-[#09090e]/95 border transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] p-6 sm:p-8 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9)] flex flex-col justify-between overflow-hidden ${
         isActive
-          ? 'border-zinc-700/90 hover:border-zinc-500/80 cursor-default pointer-events-auto'
-          : 'border-zinc-800/70 hover:border-emerald-500/40 cursor-pointer pointer-events-auto select-none'
+          ? 'border-zinc-700/90 hover:border-zinc-500/80 cursor-default pointer-events-auto ring-1 ring-white/5'
+          : 'border-zinc-800 hover:border-emerald-500/50 cursor-pointer pointer-events-auto select-none hover:shadow-[0_0_30px_rgba(16,185,129,0.15)]'
       }`}
     >
       {/* Spotlight Glow following cursor on active card */}
@@ -237,7 +241,10 @@ function ProjectCard({
             <span className="text-emerald-400">{showDetails ? '↑' : '↓'}</span>
           </button>
         ) : (
-          <span className="text-xs font-mono text-emerald-400/80">tap to bring to front</span>
+          <span className="text-xs font-mono text-emerald-400/90 flex items-center gap-1">
+            <span>select project</span>
+            <span>↗</span>
+          </span>
         )}
 
         {isActive && (
@@ -316,7 +323,7 @@ export default function ProjectsShowcase() {
         </p>
       </div>
 
-      {/* Stacked Cards Container (Offset to the right) */}
+      {/* Stacked Cards Container (Cards layered and visibly offset to the right) */}
       <div
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
