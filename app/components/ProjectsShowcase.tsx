@@ -129,11 +129,12 @@ function ProjectCard({
     }
   }
 
-  // Calculate stack layer transformation
-  // offset: 0 = active, 1 = first behind, 2 = second behind
-  const translateY = offset * 26
-  const scale = 1 - offset * 0.05
-  const opacity = offset === 0 ? 1 : offset === 1 ? 0.72 : 0.45
+  // Right-offset stacking calculations
+  // offset: 0 = active, 1 = 1st behind (peeking right), 2 = 2nd behind (peeking further right)
+  const translateX = offset * 24
+  const translateY = offset * 10
+  const scale = 1 - offset * 0.04
+  const opacity = offset === 0 ? 1 : offset === 1 ? 0.75 : 0.45
   const zIndex = 30 - offset * 10
 
   return (
@@ -145,15 +146,15 @@ function ProjectCard({
       onMouseMove={handleMouseMove}
       onTouchMove={handleTouchMove}
       style={{
-        transform: `translateY(${translateY}px) scale(${scale})`,
+        transform: `translateX(${translateX}px) translateY(${translateY}px) scale(${scale})`,
         zIndex,
         opacity,
-        transformOrigin: 'top center',
+        transformOrigin: 'left center',
       }}
-      className={`absolute inset-x-0 top-0 rounded-2xl bg-[#09090e]/95 border transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] p-6 sm:p-8 backdrop-blur-2xl shadow-[0_15px_40px_rgba(0,0,0,0.8)] flex flex-col justify-between overflow-hidden ${
+      className={`absolute left-0 top-0 w-[calc(100%-48px)] sm:w-[calc(100%-60px)] rounded-2xl bg-[#09090e]/95 border transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] p-6 sm:p-8 backdrop-blur-2xl shadow-[0_15px_40px_rgba(0,0,0,0.85)] flex flex-col justify-between overflow-hidden ${
         isActive
           ? 'border-zinc-700/90 hover:border-zinc-500/80 cursor-default pointer-events-auto'
-          : 'border-zinc-800/60 hover:border-zinc-700/60 cursor-pointer pointer-events-auto select-none'
+          : 'border-zinc-800/70 hover:border-emerald-500/40 cursor-pointer pointer-events-auto select-none'
       }`}
     >
       {/* Spotlight Glow following cursor on active card */}
@@ -236,7 +237,7 @@ function ProjectCard({
             <span className="text-emerald-400">{showDetails ? '↑' : '↓'}</span>
           </button>
         ) : (
-          <span className="text-xs font-mono text-zinc-500">tap to bring to front</span>
+          <span className="text-xs font-mono text-emerald-400/80">tap to bring to front</span>
         )}
 
         {isActive && (
@@ -283,10 +284,6 @@ export default function ProjectsShowcase() {
     setCurrentIndex((prev) => (prev + 1) % PROJECTS.length)
   }
 
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + PROJECTS.length) % PROJECTS.length)
-  }
-
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX
   }
@@ -294,10 +291,8 @@ export default function ProjectsShowcase() {
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return
     const diff = e.changedTouches[0].clientX - touchStartX.current
-    if (diff < -40) {
+    if (diff < -35) {
       handleNext()
-    } else if (diff > 40) {
-      handlePrev()
     }
     touchStartX.current = null
   }
@@ -321,11 +316,11 @@ export default function ProjectsShowcase() {
         </p>
       </div>
 
-      {/* Stacked Cards Container */}
+      {/* Stacked Cards Container (Offset to the right) */}
       <div
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        className="relative w-full h-[460px] sm:h-[420px] mb-8"
+        className="relative w-full h-[470px] sm:h-[430px] mb-8"
       >
         {PROJECTS.map((project, index) => {
           const offset = (index - currentIndex + PROJECTS.length) % PROJECTS.length
@@ -343,19 +338,9 @@ export default function ProjectsShowcase() {
         })}
       </div>
 
-      {/* Deck Controls (Next Arrow / Prev / Counter) */}
-      <div className="flex items-center justify-between max-w-md mx-auto px-2 pt-4">
-        <button
-          type="button"
-          onClick={handlePrev}
-          className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 text-xs font-mono text-zinc-400 hover:text-white transition-all cursor-pointer"
-          aria-label="Previous card"
-        >
-          <span className="text-emerald-400 transition-transform group-hover:-translate-x-0.5">←</span>
-          <span>prev</span>
-        </button>
-
-        {/* Counter and project dots */}
+      {/* Deck Controls (Only Right Arrow / Next Button & Indicators) */}
+      <div className="flex items-center justify-between max-w-sm mx-auto px-2 pt-2">
+        {/* Project dots and counter */}
         <div className="flex items-center gap-2">
           {PROJECTS.map((_, i) => (
             <button
@@ -375,15 +360,15 @@ export default function ProjectsShowcase() {
           </span>
         </div>
 
-        {/* Next Card Arrow Button */}
+        {/* Next Card Arrow Button (Single forward button) */}
         <button
           type="button"
           onClick={handleNext}
-          className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 hover:border-emerald-500/40 text-xs font-mono text-zinc-300 hover:text-emerald-300 transition-all cursor-pointer shadow-lg"
-          aria-label="Next card"
+          className="group flex items-center gap-2.5 px-5 py-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 hover:border-emerald-500/40 text-xs font-mono text-zinc-200 hover:text-emerald-300 transition-all cursor-pointer shadow-xl"
+          aria-label="Next project card"
         >
-          <span>next</span>
-          <span className="text-emerald-400 transition-transform group-hover:translate-x-0.5">→</span>
+          <span>next project</span>
+          <span className="text-emerald-400 transition-transform group-hover:translate-x-1 font-bold">→</span>
         </button>
       </div>
     </section>
