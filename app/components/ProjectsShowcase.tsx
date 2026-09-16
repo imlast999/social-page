@@ -74,12 +74,10 @@ function ProjectCard({
   project,
   isActive,
   offset,
-  onSelect,
 }: {
   project: Project
   isActive: boolean
   offset: number
-  onSelect: () => void
 }) {
   const cardRef = useRef<HTMLDivElement>(null)
   const [coords, setCoords] = useState({ x: 0, y: 0 })
@@ -129,7 +127,7 @@ function ProjectCard({
     }
   }
 
-  // Right-offset stacking calculations (Clearly visible on the right of the front card)
+  // Right-offset stacking calculations (Bright, crisp and clearly visible on the right)
   // offset: 0 = front active card, 1 = 1st card behind to the right, 2 = 2nd card behind further to the right
   const isMobile = typeof window !== 'undefined' ? window.innerWidth < 640 : false
   const stepX = isMobile ? 28 : 46
@@ -138,15 +136,12 @@ function ProjectCard({
   const translateX = offset * stepX
   const translateY = offset * stepY
   const scale = 1 - offset * 0.035
-  const opacity = offset === 0 ? 1 : offset === 1 ? 0.78 : 0.48
+  const opacity = offset === 0 ? 1 : offset === 1 ? 0.90 : 0.75
   const zIndex = 30 - offset * 10
 
   return (
     <div
       ref={cardRef}
-      onClick={() => {
-        if (!isActive) onSelect()
-      }}
       onMouseMove={handleMouseMove}
       onTouchMove={handleTouchMove}
       style={{
@@ -155,10 +150,10 @@ function ProjectCard({
         opacity,
         transformOrigin: 'left center',
       }}
-      className={`absolute left-0 top-0 w-[calc(100%-60px)] sm:w-[calc(100%-96px)] rounded-2xl bg-[#09090e]/95 border transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] p-6 sm:p-8 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9)] flex flex-col justify-between overflow-hidden ${
+      className={`absolute left-0 top-0 w-[calc(100%-60px)] sm:w-[calc(100%-96px)] rounded-2xl transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] p-6 sm:p-8 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9)] flex flex-col justify-between overflow-hidden ${
         isActive
-          ? 'border-zinc-700/90 hover:border-zinc-500/80 cursor-default pointer-events-auto ring-1 ring-white/5'
-          : 'border-zinc-800 hover:border-emerald-500/50 cursor-pointer pointer-events-auto select-none hover:shadow-[0_0_30px_rgba(16,185,129,0.15)]'
+          ? 'bg-[#0a0a10]/95 border border-zinc-600/90 hover:border-zinc-400/80 cursor-default pointer-events-auto ring-1 ring-white/10 shadow-[0_0_35px_rgba(0,0,0,0.95)]'
+          : 'bg-[#0e0e16]/95 border border-zinc-700/80 pointer-events-none select-none shadow-[0_0_30px_rgba(255,255,255,0.03)]'
       }`}
     >
       {/* Spotlight Glow following cursor on active card */}
@@ -166,16 +161,21 @@ function ProjectCard({
         <div
           className="pointer-events-none absolute -inset-px rounded-2xl opacity-100 transition-opacity duration-300"
           style={{
-            background: `radial-gradient(450px circle at ${coords.x}px ${coords.y}px, rgba(255, 255, 255, 0.06), transparent 80%)`,
+            background: `radial-gradient(450px circle at ${coords.x}px ${coords.y}px, rgba(255, 255, 255, 0.07), transparent 80%)`,
           }}
         />
+      )}
+
+      {/* Subtle border highlight on cards behind */}
+      {!isActive && (
+        <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-transparent to-white/[0.04]" />
       )}
 
       {/* Card Content */}
       <div className="relative z-10 space-y-4">
         {/* Category & Status Bar */}
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-500">
+          <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-400">
             {project.category}
           </span>
           {getStatusBadge()}
@@ -201,7 +201,7 @@ function ProjectCard({
           {project.tags.map((tag) => (
             <span
               key={tag}
-              className="text-[11px] font-mono px-2.5 py-0.5 rounded-md bg-zinc-900/90 text-zinc-400 border border-zinc-800/70"
+              className="text-[11px] font-mono px-2.5 py-0.5 rounded-md bg-zinc-900/90 text-zinc-300 border border-zinc-700/70"
             >
               {tag}
             </span>
@@ -241,10 +241,7 @@ function ProjectCard({
             <span className="text-emerald-400">{showDetails ? '↑' : '↓'}</span>
           </button>
         ) : (
-          <span className="text-xs font-mono text-emerald-400/90 flex items-center gap-1">
-            <span>select project</span>
-            <span>↗</span>
-          </span>
+          <span className="text-xs font-mono text-zinc-500">project preview</span>
         )}
 
         {isActive && (
@@ -339,7 +336,6 @@ export default function ProjectsShowcase() {
               project={project}
               isActive={isActive}
               offset={offset}
-              onSelect={() => setCurrentIndex(index)}
             />
           )
         })}
@@ -350,19 +346,16 @@ export default function ProjectsShowcase() {
         {/* Project dots and counter */}
         <div className="flex items-center gap-2">
           {PROJECTS.map((_, i) => (
-            <button
+            <span
               key={i}
-              type="button"
-              onClick={() => setCurrentIndex(i)}
-              className={`h-1.5 rounded-full transition-all cursor-pointer ${
+              className={`h-1.5 rounded-full transition-all ${
                 i === currentIndex
                   ? 'w-6 bg-emerald-400'
-                  : 'w-2 bg-zinc-800 hover:bg-zinc-600'
+                  : 'w-2 bg-zinc-800'
               }`}
-              aria-label={`Go to project ${i + 1}`}
             />
           ))}
-          <span className="text-xs font-mono text-zinc-500 ml-2">
+          <span className="text-xs font-mono text-zinc-400 ml-2 font-medium">
             0{currentIndex + 1} / 0{PROJECTS.length}
           </span>
         </div>
@@ -371,7 +364,7 @@ export default function ProjectsShowcase() {
         <button
           type="button"
           onClick={handleNext}
-          className="group flex items-center gap-2.5 px-5 py-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 hover:border-emerald-500/40 text-xs font-mono text-zinc-200 hover:text-emerald-300 transition-all cursor-pointer shadow-xl"
+          className="group flex items-center gap-2.5 px-5 py-2.5 rounded-xl bg-zinc-900/95 hover:bg-zinc-800 border border-zinc-700/80 hover:border-emerald-500/50 text-xs font-mono text-zinc-100 hover:text-emerald-300 transition-all cursor-pointer shadow-xl ring-1 ring-white/5"
           aria-label="Next project card"
         >
           <span>next project</span>
