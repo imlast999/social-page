@@ -13,8 +13,27 @@ interface TerminalProps {
   onExploreProjects?: () => void
 }
 
+const AVAILABLE_COMMANDS = [
+  'about',
+  'setup',
+  'skills',
+  'projects',
+  'socials',
+  'contact',
+  'whoami',
+  'uname',
+  'ls',
+  'matrix',
+  'history',
+  'clear',
+  'sudo',
+  'help',
+]
+
 export default function Terminal({ onExploreProjects }: TerminalProps) {
   const [inputVal, setInputVal] = useState('')
+  const [commandHistory, setCommandHistory] = useState<string[]>([])
+  const [historyIndex, setHistoryIndex] = useState<number>(-1)
   const [history, setHistory] = useState<HistoryItem[]>([
     {
       id: 'welcome-1',
@@ -43,16 +62,35 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
   }, [history, isMatrixRunning])
 
   const executeCommand = (rawCmd: string) => {
-    const cmd = rawCmd.trim()
-    const lowerCmd = cmd.toLowerCase()
-    if (!cmd) return
+    const trimmed = rawCmd.trim()
+
+    // 1. Real Terminal Behavior: Pressing Enter with no text outputs an empty prompt line
+    if (!trimmed) {
+      setHistory((prev) => [
+        ...prev,
+        {
+          id: `in-${Date.now()}-${Math.random()}`,
+          type: 'input',
+          command: '',
+        },
+      ])
+      setInputVal('')
+      setHistoryIndex(-1)
+      return
+    }
+
+    // Save to command memory for ArrowUp / ArrowDown navigation
+    setCommandHistory((prev) => [...prev, rawCmd])
+    setHistoryIndex(-1)
+
+    const lowerCmd = trimmed.toLowerCase()
 
     const newHistory: HistoryItem[] = [
       ...history,
       {
-        id: `in-${Date.now()}`,
+        id: `in-${Date.now()}-${Math.random()}`,
         type: 'input',
-        command: cmd,
+        command: rawCmd,
       },
     ]
 
@@ -106,6 +144,10 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
                 <div className="flex items-center justify-between">
                   <span className="text-emerald-400 font-bold">matrix</span>
                   <span className="text-zinc-400 text-xs">digital stream simulation</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-emerald-400 font-bold">history</span>
+                  <span className="text-zinc-400 text-xs">view entered commands</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-emerald-400 font-bold">clear</span>
@@ -262,6 +304,28 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
         })
         break
 
+      case 'history':
+        newHistory.push({
+          id: `out-${Date.now()}`,
+          type: 'output',
+          content: (
+            <div className="text-zinc-300 font-mono text-xs sm:text-sm leading-relaxed space-y-1 py-1">
+              <div className="text-zinc-500 border-b border-zinc-800/80 pb-1">COMMAND HISTORY:</div>
+              {commandHistory.length === 0 ? (
+                <p className="text-zinc-500">No commands in session history.</p>
+              ) : (
+                commandHistory.map((c, i) => (
+                  <p key={i}>
+                    <span className="text-zinc-500 inline-block w-8">{i + 1}</span>
+                    <span className="text-emerald-400">{c}</span>
+                  </p>
+                ))
+              )}
+            </div>
+          ),
+        })
+        break
+
       case 'sudo':
       case 'sudo su':
         newHistory.push({
@@ -332,7 +396,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
             <div className="text-emerald-400 font-mono text-xs leading-tight select-none py-1 space-y-1">
               <p>[matrix] initializing stream sequence...</p>
               <p className="text-emerald-500 font-bold tracking-widest">
-                01001001 01001101 01001100 01000001 01010011 01010100 00111001 00111001 00111001
+                01001001 01001100 01000001 01010011 01010100 00111001 00111001 00111001
               </p>
               <p className="text-emerald-300">
                 01110110 01101111 01101001 01100100 00101101 01110011 01110000 01100001 01100011
@@ -372,6 +436,73 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     executeCommand(inputVal)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Ctrl + L or Cmd + K to clear terminal screen
+    if ((e.ctrlKey && e.key.toLowerCase() === 'l') || (e.metaKey && e.key.toLowerCase() === 'k')) {
+      e.preventDefault()
+      setHistory([])
+      setInputVal('')
+      return
+    }
+
+    // Arrow Up (navigate backward through command history)
+    if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      if (commandHistory.length === 0) return
+      const nextIdx = historyIndex === -1 ? commandHistory.length - 1 : Math.max(0, historyIndex - 1)
+      setHistoryIndex(nextIdx)
+      setInputVal(commandHistory[nextIdx] || '')
+      return
+    }
+
+    // Arrow Down (navigate forward through command history)
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      if (historyIndex === -1) return
+      const nextIdx = historyIndex + 1
+      if (nextIdx >= commandHistory.length) {
+        setHistoryIndex(-1)
+        setInputVal('')
+      } else {
+        setHistoryIndex(nextIdx)
+        setInputVal(commandHistory[nextIdx])
+      }
+      return
+    }
+
+    // Tab (command auto-completion)
+    if (e.key === 'Tab') {
+      e.preventDefault()
+      const prefix = inputVal.trim().toLowerCase()
+      if (!prefix) return
+      const matches = AVAILABLE_COMMANDS.filter((c) => c.startsWith(prefix))
+      if (matches.length === 1) {
+        setInputVal(matches[0])
+      } else if (matches.length > 1) {
+        setHistory((prev) => [
+          ...prev,
+          {
+            id: `in-${Date.now()}`,
+            type: 'input',
+            command: inputVal,
+          },
+          {
+            id: `out-${Date.now()}`,
+            type: 'output',
+            content: (
+              <div className="text-zinc-400 font-mono text-xs flex flex-wrap gap-4 py-1">
+                {matches.map((m) => (
+                  <span key={m} className="text-emerald-400 font-bold">{m}</span>
+                ))}
+              </div>
+            ),
+          },
+        ])
+      }
+      return
+    }
   }
 
   return (
@@ -438,6 +569,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
                 type="text"
                 value={inputVal}
                 onChange={(e) => setInputVal(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder=""
                 className="w-full bg-transparent border-none outline-none text-white font-mono text-xs sm:text-sm focus:ring-0 p-0"
                 autoCapitalize="none"
