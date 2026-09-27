@@ -140,6 +140,28 @@ interface Star {
   baseAlpha: number
   twinkleSpeed: number
   phase: number
+  color: string
+}
+
+interface Meteor {
+  x: number
+  y: number
+  length: number
+  speed: number
+  angle: number
+  alpha: number
+  width: number
+}
+
+interface Particle {
+  x: number
+  y: number
+  vx: number
+  vy: number
+  life: number
+  maxLife: number
+  size: number
+  color: string
 }
 
 export default function SocialLinksMatrix() {
@@ -157,9 +179,18 @@ export default function SocialLinksMatrix() {
   const lastWidthRef = useRef<number>(0)
 
   // Mouse & Gyroscope position ref for smooth canvas parallax
-  const mouseRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 })
+  const mouseRef = useRef({
+    x: 0,
+    y: 0,
+    targetX: 0,
+    targetY: 0,
+    screenX: 0,
+    screenY: 0,
+    lastScreenX: 0,
+    lastScreenY: 0,
+  })
 
-  // 1. Interactive Starfield Canvas with Mobile Gyroscope Parallax
+  // 1. Interactive Starfield, Nebula & Cosmic Particle Canvas
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -176,33 +207,67 @@ export default function SocialLinksMatrix() {
     }
     window.addEventListener('resize', handleResize)
 
+    // Natural Star Spectral Palette (O, B, A, F, G, K star temperatures)
+    const STAR_COLORS = [
+      'rgba(255, 255, 255, ',   // Pure White
+      'rgba(215, 235, 255, ',   // Celestial Ice Blue
+      'rgba(255, 244, 225, ',   // Warm Solar Gold
+      'rgba(230, 220, 255, ',   // Cosmic Lavender
+      'rgba(180, 220, 255, ',   // Bright Cyan Star
+    ]
+
     // Generate stars with 3D depth (z)
-    const starCount = 145
+    const starCount = 180
     const stars: Star[] = []
     for (let i = 0; i < starCount; i++) {
+      const color = STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)]
       stars.push({
         x: Math.random() * width,
         y: Math.random() * height,
         z: 0.2 + Math.random() * 0.8,
-        radius: 0.8 + Math.random() * 1.5,
-        baseAlpha: 0.25 + Math.random() * 0.6,
-        twinkleSpeed: 0.01 + Math.random() * 0.02,
+        radius: 0.6 + Math.random() * 1.6,
+        baseAlpha: 0.25 + Math.random() * 0.65,
+        twinkleSpeed: 0.008 + Math.random() * 0.025,
         phase: Math.random() * Math.PI * 2,
+        color,
       })
     }
+
+    // Shooting stars / Meteors
+    const meteors: Meteor[] = []
+    let lastMeteorTime = 0
+
+    // Stardust particles trailing the cursor
+    const particles: Particle[] = []
 
     // Desktop Mouse Move
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current.targetX = (e.clientX - width / 2) / (width / 2)
       mouseRef.current.targetY = (e.clientY - height / 2) / (height / 2)
+      mouseRef.current.lastScreenX = mouseRef.current.screenX
+      mouseRef.current.lastScreenY = mouseRef.current.screenY
+      mouseRef.current.screenX = e.clientX
+      mouseRef.current.screenY = e.clientY
+
+      // Spawn subtle glowing stardust upon cursor movement
+      if (particles.length < 40 && Math.random() < 0.6) {
+        particles.push({
+          x: e.clientX + (Math.random() - 0.5) * 20,
+          y: e.clientY + (Math.random() - 0.5) * 20,
+          vx: (Math.random() - 0.5) * 0.8,
+          vy: (Math.random() - 0.5) * 0.8,
+          life: 1,
+          maxLife: 30 + Math.random() * 25,
+          size: 1 + Math.random() * 2,
+          color: Math.random() > 0.5 ? 'rgba(52, 211, 153, ' : 'rgba(6, 182, 212, ',
+        })
+      }
     }
     window.addEventListener('mousemove', handleMouseMove)
 
     // Mobile DeviceOrientation (Gyroscope Tilt)
     const handleOrientation = (e: DeviceOrientationEvent) => {
       if (e.gamma === null || e.beta === null) return
-      // gamma is left/right tilt [-90, 90]
-      // beta is front/back tilt [-180, 180]
       const clampedGamma = Math.max(-45, Math.min(45, e.gamma))
       const clampedBeta = Math.max(-45, Math.min(45, e.beta - 40))
       mouseRef.current.targetX = clampedGamma / 45
@@ -221,10 +286,29 @@ export default function SocialLinksMatrix() {
 
       ctx.clearRect(0, 0, width, height)
 
-      // Draw 3D Stars
+      // 1. Draw Ethereal Cosmic Nebula Glow Clouds
+      const neb1X = width * 0.25 + mouseRef.current.x * 25 + Math.sin(time * 0.3) * 30
+      const neb1Y = height * 0.35 + mouseRef.current.y * 25 + Math.cos(time * 0.2) * 25
+      const grad1 = ctx.createRadialGradient(neb1X, neb1Y, 10, neb1X, neb1Y, width * 0.45)
+      grad1.addColorStop(0, 'rgba(56, 18, 90, 0.12)')
+      grad1.addColorStop(0.5, 'rgba(16, 24, 70, 0.06)')
+      grad1.addColorStop(1, 'transparent')
+      ctx.fillStyle = grad1
+      ctx.fillRect(0, 0, width, height)
+
+      const neb2X = width * 0.75 - mouseRef.current.x * 30 + Math.cos(time * 0.25) * 35
+      const neb2Y = height * 0.65 - mouseRef.current.y * 30 + Math.sin(time * 0.35) * 30
+      const grad2 = ctx.createRadialGradient(neb2X, neb2Y, 10, neb2X, neb2Y, width * 0.4)
+      grad2.addColorStop(0, 'rgba(6, 78, 100, 0.09)')
+      grad2.addColorStop(0.5, 'rgba(16, 185, 129, 0.04)')
+      grad2.addColorStop(1, 'transparent')
+      ctx.fillStyle = grad2
+      ctx.fillRect(0, 0, width, height)
+
+      // 2. Draw 3D Twinkling Stars
       for (let i = 0; i < stars.length; i++) {
         const star = stars[i]
-        const parallaxAmount = star.z * 35
+        const parallaxAmount = star.z * 40
         const starX = star.x + mouseRef.current.x * parallaxAmount
         const starY = star.y + mouseRef.current.y * parallaxAmount
 
@@ -232,16 +316,86 @@ export default function SocialLinksMatrix() {
         const modY = ((starY % height) + height) % height
 
         const alpha = Math.max(
-          0.1,
+          0.08,
           Math.min(
             1,
-            star.baseAlpha + Math.sin(time * star.twinkleSpeed * 50 + star.phase) * 0.25
+            star.baseAlpha + Math.sin(time * star.twinkleSpeed * 50 + star.phase) * 0.3
           )
         )
 
+        // Draw soft glow aura for brighter/larger foreground stars
+        if (star.z > 0.7 && alpha > 0.6) {
+          ctx.beginPath()
+          ctx.arc(modX, modY, star.radius * star.z * 2.4, 0, Math.PI * 2)
+          ctx.fillStyle = `${star.color}${alpha * 0.2})`
+          ctx.fill()
+        }
+
         ctx.beginPath()
         ctx.arc(modX, modY, star.radius * star.z, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`
+        ctx.fillStyle = `${star.color}${alpha})`
+        ctx.fill()
+      }
+
+      // 3. Random Shooting Stars / Meteors
+      if (Date.now() - lastMeteorTime > 4000 && Math.random() < 0.02) {
+        lastMeteorTime = Date.now()
+        meteors.push({
+          x: Math.random() * width,
+          y: Math.random() * (height * 0.5),
+          length: 80 + Math.random() * 90,
+          speed: 12 + Math.random() * 8,
+          angle: Math.PI / 4 + (Math.random() - 0.5) * 0.2,
+          alpha: 1,
+          width: 1.5 + Math.random() * 1.5,
+        })
+      }
+
+      for (let i = meteors.length - 1; i >= 0; i--) {
+        const m = meteors[i]
+        m.x += Math.cos(m.angle) * m.speed
+        m.y += Math.sin(m.angle) * m.speed
+        m.alpha -= 0.018
+
+        if (m.alpha <= 0 || m.x > width || m.y > height) {
+          meteors.splice(i, 1)
+          continue
+        }
+
+        const tailX = m.x - Math.cos(m.angle) * m.length
+        const tailY = m.y - Math.sin(m.angle) * m.length
+
+        const meteorGrad = ctx.createLinearGradient(m.x, m.y, tailX, tailY)
+        meteorGrad.addColorStop(0, `rgba(255, 255, 255, ${m.alpha})`)
+        meteorGrad.addColorStop(0.3, `rgba(52, 211, 153, ${m.alpha * 0.7})`)
+        meteorGrad.addColorStop(1, 'transparent')
+
+        ctx.beginPath()
+        ctx.moveTo(m.x, m.y)
+        ctx.lineTo(tailX, tailY)
+        ctx.strokeStyle = meteorGrad
+        ctx.lineWidth = m.width
+        ctx.lineCap = 'round'
+        ctx.stroke()
+      }
+
+      // 4. Stardust Particles trailing cursor
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i]
+        p.x += p.vx
+        p.y += p.vy
+        p.life++
+        const progress = p.life / p.maxLife
+        const particleAlpha = Math.max(0, (1 - progress) * 0.6)
+
+        if (progress >= 1) {
+          particles.splice(i, 1)
+          continue
+        }
+
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.size * (1 - progress * 0.5), 0, Math.PI * 2)
+        ctx.fillStyle = `${p.color}${particleAlpha})`
         ctx.fill()
       }
 
@@ -257,6 +411,7 @@ export default function SocialLinksMatrix() {
       cancelAnimationFrame(animationFrameId)
     }
   }, [])
+
 
   // 2. Compute non-overlapping random positions inside the Hero view
   const computeNonOverlappingPositions = useCallback(() => {
