@@ -4,11 +4,56 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
-const ETH_ADDRESS = '0x2232047f31888e6EAdC21d920E8FC4BD3ccDE13f'
+const EVM_ADDRESS = '0x2232047f31888e6EAdC21d920E8FC4BD3ccDE13f'
 const ABSTRACT_PROFILE = 'https://portal.abs.xyz/profile/0x73c83FD4803095f2da1D2b4C74D6332abbd100AD'
 const AXIOM_PROFILE = 'https://axiom.trade/@imlast999'
 const SHARKS_URL = 'https://millionairesharks.com'
 const FOMO_URL = 'https://fomo.family/r/imlast999'
+
+const L2_EXPLORERS = [
+  {
+    name: 'LayerZero Scan',
+    tag: 'OMNIX',
+    description: 'Cross-chain messaging & omnichain transfers',
+    url: `https://layerzeroscan.com/address/${EVM_ADDRESS}`,
+    highlight: true,
+  },
+  {
+    name: 'Abstract Portal',
+    tag: 'EVM L2',
+    description: 'Consumer crypto on-chain identity & state',
+    url: ABSTRACT_PROFILE,
+    highlight: true,
+  },
+  {
+    name: 'BaseScan',
+    tag: 'BASE',
+    description: 'Coinbase L2 transaction registry & tokens',
+    url: `https://basescan.org/address/${EVM_ADDRESS}`,
+    highlight: false,
+  },
+  {
+    name: 'OP Etherscan',
+    tag: 'OPTIMISM',
+    description: 'Superchain EVM rollup activity & contracts',
+    url: `https://optimistic.etherscan.io/address/${EVM_ADDRESS}`,
+    highlight: false,
+  },
+  {
+    name: 'DeBank Portfolio',
+    tag: 'MULTI-ASSET',
+    description: 'Aggregated cross-chain positions & liquidity',
+    url: `https://debank.com/profile/${EVM_ADDRESS}`,
+    highlight: false,
+  },
+  {
+    name: 'Etherscan',
+    tag: 'L1 MAINNET',
+    description: 'Ethereum mainnet base layer ledger',
+    url: `https://etherscan.io/address/${EVM_ADDRESS}`,
+    highlight: false,
+  },
+]
 
 const PROTOCOLS = [
   {
@@ -53,7 +98,7 @@ export default function Web3Page() {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(ETH_ADDRESS)
+    navigator.clipboard.writeText(EVM_ADDRESS)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -80,7 +125,7 @@ export default function Web3Page() {
 
           <div className="flex items-center gap-2 text-[11px] text-zinc-400">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span>MAINNET VERIFIED</span>
+            <span>OMNIX VERIFIED</span>
           </div>
         </header>
 
@@ -98,8 +143,23 @@ export default function Web3Page() {
             </h1>
 
             <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-sans max-w-lg">
-              Cryptographic address registry, smart accounts, and verified protocol endpoints.
+              Omnichain identity, multi-network L2 smart accounts, and verified protocol endpoints.
             </p>
+
+            <div className="pt-2 flex flex-wrap gap-2 text-[10px] text-zinc-400">
+              <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-300">
+                LAYERZERO
+              </span>
+              <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-300">
+                ABSTRACT
+              </span>
+              <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-300">
+                BASE
+              </span>
+              <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-300">
+                OPTIMISM
+              </span>
+            </div>
           </div>
 
           {/* Generated Obsidian Sigil Artwork */}
@@ -115,7 +175,7 @@ export default function Web3Page() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-transparent opacity-80" />
             <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[10px] text-zinc-400">
               <span>SEC_SPEC: secp256k1</span>
-              <span>STATE: ON-CHAIN</span>
+              <span>STATE: MULTI-CHAIN</span>
             </div>
           </div>
         </section>
@@ -126,17 +186,17 @@ export default function Web3Page() {
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400" />
               <span className="text-xs tracking-wider uppercase text-zinc-300 font-semibold">
-                Ethereum Mainnet & Layer 2 Address
+                Multi-Chain EVM & Layer 2 Address
               </span>
             </div>
-            <span className="text-[10px] px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400">
-              EVM STANDARD
+            <span className="text-[10px] px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-emerald-400 font-medium">
+              OMNIX ROUTE READY
             </span>
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <div className="flex-1 px-4 py-3 rounded-lg bg-black/90 border border-zinc-850 text-xs sm:text-sm text-zinc-200 break-all select-all flex items-center justify-between">
-              <span>{ETH_ADDRESS}</span>
+              <span>{EVM_ADDRESS}</span>
             </div>
             <button
               type="button"
@@ -148,17 +208,59 @@ export default function Web3Page() {
             </button>
           </div>
 
-          <div className="pt-2 border-t border-zinc-850 flex items-center justify-between flex-wrap gap-3 text-xs text-zinc-400">
-            <span>Explorer verification:</span>
+          {/* Primary Omnichain Explorer Highlight */}
+          <div className="pt-3 border-t border-zinc-850 flex items-center justify-between flex-wrap gap-3 text-xs">
+            <span className="text-zinc-400">Primary Omnichain Explorer:</span>
             <a
-              href={`https://etherscan.io/address/${ETH_ADDRESS}`}
+              href={`https://layerzeroscan.com/address/${EVM_ADDRESS}`}
               target="_blank"
               rel="noreferrer"
-              className="text-emerald-400 hover:underline flex items-center gap-1"
+              className="text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-1.5 group"
             >
-              <span>etherscan.io</span>
-              <span>↗</span>
+              <span className="font-semibold">layerzeroscan.com</span>
+              <span className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">↗</span>
             </a>
+          </div>
+        </section>
+
+        {/* Multi-Network & L2 Explorer Grid */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm uppercase tracking-wider text-zinc-400">
+              Multi-Network & L2 Explorers
+            </h2>
+            <span className="text-xs text-zinc-600">6 endpoints</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {L2_EXPLORERS.map((exp) => (
+              <a
+                key={exp.name}
+                href={exp.url}
+                target="_blank"
+                rel="noreferrer"
+                className={`p-4 rounded-xl border transition-all flex flex-col justify-between space-y-2 group ${
+                  exp.highlight
+                    ? 'bg-[#0a0f12] border-emerald-900/60 hover:border-emerald-500/60'
+                    : 'bg-[#09090e] border-zinc-850 hover:border-zinc-700'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-white group-hover:text-emerald-300 transition-colors">
+                    {exp.name}
+                  </span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-black/60 border border-zinc-800 text-zinc-400">
+                    {exp.tag}
+                  </span>
+                </div>
+                <p className="text-[11px] text-zinc-400 leading-normal font-sans">
+                  {exp.description}
+                </p>
+                <div className="pt-2 border-t border-zinc-850/60 flex items-center justify-end text-[10px] text-zinc-500 group-hover:text-zinc-300 transition-colors">
+                  <span>open scanner ↗</span>
+                </div>
+              </a>
+            ))}
           </div>
         </section>
 
@@ -209,7 +311,7 @@ export default function Web3Page() {
 
         {/* Footer */}
         <footer className="pt-8 border-t border-zinc-850 text-center text-xs text-zinc-600">
-          <p>imlast999 · on-chain public key registry · {new Date().getFullYear()}</p>
+          <p>imlast999 · omnichain public key registry · {new Date().getFullYear()}</p>
         </footer>
       </div>
     </main>
