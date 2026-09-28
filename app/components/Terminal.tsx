@@ -194,7 +194,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           content: (
             <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
               instagram  https://instagram.com/imlast999{'\n'}
-              twitter    https://twitter.com/imlast999{'\n'}
+              twitter/x  https://x.com/imlast999{'\n'}
               tiktok     https://tiktok.com/@imlast999_{'\n'}
               telegram   https://t.me/imlast999{'\n'}
               twitch     https://twitch.tv/imlast999{'\n'}
@@ -219,7 +219,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
             <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
               email:    lxstbrexthe@gmail.com{'\n'}
               telegram: @imlast999 (https://t.me/imlast999){'\n'}
-              twitter:  @imlast999 (https://twitter.com/imlast999)
+              twitter/x:  @imlast999 (https://x.com/imlast999)
             </div>
           ),
         })

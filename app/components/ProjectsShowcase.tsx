@@ -384,17 +384,10 @@ export default function ProjectsShowcase() {
       className="w-full max-w-4xl mx-auto px-4 py-16 sm:py-24 select-none"
     >
       {/* Section Header */}
-      <div className="text-center space-y-3 mb-10">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-zinc-900/90 border border-zinc-800 text-zinc-300 text-xs font-mono shadow-sm">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>PORTFOLIO & CREATIONS</span>
-        </div>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-white tracking-tight">
-          Holographic Deck
+      <div className="text-center mb-8 sm:mb-10">
+        <h2 className="text-2xl sm:text-3xl font-medium text-white/90 tracking-tight">
+          Actual Projects
         </h2>
-        <p className="text-zinc-400 text-xs sm:text-sm max-w-lg mx-auto">
-          Interactive 3D stacked deck. Move your cursor over the card for holographic perspective tilt.
-        </p>
       </div>
 
       {/* Stacked Cards Container (Cards layered and visibly offset to the right) */}

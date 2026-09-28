@@ -880,25 +880,12 @@ export default function SocialLinksMatrix() {
       </section>
 
       {/* ========================================================= */}
-      {/* SECTION 2: INTERACTIVE HACKER TERMINAL (imlast999 ~ $)    */}
+      {/* SECTION 2: INTERACTIVE TERMINAL                           */}
       {/* ========================================================= */}
       <section
         id="terminal-section"
-        className="relative z-10 w-full py-16 sm:py-24 border-t border-zinc-900/80 bg-gradient-to-b from-transparent via-[#08080d]/80 to-transparent"
+        className="relative z-10 w-full py-12 sm:py-20 border-t border-zinc-900/80 bg-gradient-to-b from-transparent via-[#08080d]/80 to-transparent"
       >
-        <div className="max-w-4xl mx-auto text-center px-4 mb-8 space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900/80 border border-zinc-800 text-zinc-400 text-xs font-mono">
-            <span className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span>INTERACTIVE CONSOLE</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-medium text-white tracking-tight">
-            terminal access
-          </h2>
-          <p className="text-xs sm:text-sm text-zinc-400 font-mono">
-            Type 'help' to explore available commands
-          </p>
-        </div>
-
         <Terminal onExploreProjects={() => scrollToSection('projects-section')} />
       </section>
 
