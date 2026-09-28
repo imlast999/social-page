@@ -279,6 +279,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
                 <p><span className="text-zinc-500 w-20 inline-block">twitch:</span> <a href="https://twitch.tv/imlast999" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline">twitch.tv/imlast999</a></p>
                 <p><span className="text-zinc-500 w-20 inline-block">ethereum:</span> <span className="text-zinc-300">0x223204...DE13f</span></p>
                 <p><span className="text-zinc-500 w-20 inline-block">spotify:</span> <a href="https://open.spotify.com/user/31ezp7nbkqtopvtodymrdipbr22m" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline">open.spotify.com</a></p>
+                <p><span className="text-zinc-500 w-20 inline-block">axiom:</span> <a href="https://axiom.trade/@imlast999" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline">axiom.trade/@imlast999</a></p>
               </div>
             </div>
           ),

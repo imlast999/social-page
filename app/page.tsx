@@ -107,6 +107,13 @@ const SOCIAL_ITEMS: SocialItem[] = [
     brandColor: '#F0F6FC',
     glowColor: 'rgba(240, 246, 252, 0.3)',
   },
+  {
+    id: 'axiom',
+    label: 'axiom',
+    href: 'https://axiom.trade/@imlast999',
+    brandColor: '#FFFFFF',
+    glowColor: 'rgba(255, 255, 255, 0.4)',
+  },
 ]
 
 // Scatter presets for letter hover effect
