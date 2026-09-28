@@ -19,6 +19,8 @@ const AVAILABLE_COMMANDS = [
   'skills',
   'projects',
   'socials',
+  'web3',
+  'void',
   'contact',
   'whoami',
   'uname',
@@ -34,6 +36,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
   const [inputVal, setInputVal] = useState('')
   const [commandHistory, setCommandHistory] = useState<string[]>([])
   const [historyIndex, setHistoryIndex] = useState<number>(-1)
+  const [isGodMode, setIsGodMode] = useState(false)
   const [history, setHistory] = useState<HistoryItem[]>([
     {
       id: 'welcome-1',
@@ -103,6 +106,8 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
               {'  '}skills      technical competencies and stack{'\n'}
               {'  '}projects    featured applications and repos{'\n'}
               {'  '}socials     connected network endpoints{'\n'}
+              {'  '}web3        open decentralized on-chain hub{'\n'}
+              {'  '}void        warp to the void point-and-click adventure{'\n'}
               {'  '}contact     direct communication channels{'\n'}
               {'  '}whoami      print current user identity{'\n'}
               {'  '}uname       print system kernel and architecture{'\n'}
@@ -114,6 +119,39 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
             </div>
           ),
         })
+        break
+
+      case 'web3':
+      case 'open web3':
+        newHistory.push({
+          id: `out-${Date.now()}`,
+          type: 'output',
+          content: (
+            <div className="text-emerald-400 font-mono text-xs sm:text-sm whitespace-pre-wrap">
+              [web3] accessing on-chain portal... redirecting to /web3
+            </div>
+          ),
+        })
+        setTimeout(() => {
+          window.location.href = '/web3'
+        }, 250)
+        break
+
+      case 'void':
+      case 'enter void':
+      case 'warp void':
+        newHistory.push({
+          id: `out-${Date.now()}`,
+          type: 'output',
+          content: (
+            <div className="text-purple-400 font-mono text-xs sm:text-sm whitespace-pre-wrap">
+              [void] initiating sub-quantum warp... entering /void adventure
+            </div>
+          ),
+        })
+        setTimeout(() => {
+          window.location.href = '/void'
+        }, 250)
         break
 
       case 'about':
@@ -239,6 +277,23 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
         })
         break
 
+      case 'sudo void-root-999':
+      case 'sudo void999':
+      case 'sudo root':
+        setIsGodMode(true)
+        newHistory.push({
+          id: `out-${Date.now()}`,
+          type: 'output',
+          content: (
+            <div className="text-emerald-400 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
+              [ROOT ACCESS AUTHORIZED: MASTER OVERRIDE ACTIVE]{'\n'}
+              All security safeguards dissolved. God Mode enabled.{'\n'}
+              Welcome to the core terminal, Operator.
+            </div>
+          ),
+        })
+        break
+
       case 'sudo':
       case 'sudo su':
         newHistory.push({
@@ -247,7 +302,8 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           content: (
             <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
               [sudo] password for visitor: **********{'\n'}
-              zsh: permission denied: visitor is not in the sudoers configuration.
+              <span className="text-red-400">zsh: permission denied: visitor is not in the sudoers configuration.</span>{'\n'}
+              <span className="text-zinc-500 text-xs">Hint: Seek the root cipher in /void</span>
             </div>
           ),
         })
@@ -273,7 +329,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           type: 'output',
           content: (
             <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap">
-              about.txt   contact.md   projects/   setup.log   skills.json
+              about.txt   contact.md   projects/   setup.log   skills.json   web3/   void/
             </div>
           ),
         })
@@ -407,10 +463,14 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
     }
   }
 
+  const promptPrefix = isGodMode ? 'imlast999@is-a.dev [ROOT] #' : 'imlast999@is-a.dev ~ %'
+
   return (
     <div className="w-full max-w-4xl mx-auto px-4">
       {/* Terminal Window with Subtle Cyber Neon Glow */}
-      <div className="relative rounded-xl bg-[#08080c]/95 border border-zinc-700/80 shadow-[0_0_40px_rgba(16,185,129,0.08),0_0_2px_rgba(16,185,129,0.3),0_20px_60px_rgba(0,0,0,0.9)] backdrop-blur-2xl overflow-hidden ring-1 ring-white/5">
+      <div className={`relative rounded-xl bg-[#08080c]/95 border ${
+        isGodMode ? 'border-emerald-400/80 shadow-[0_0_60px_rgba(16,185,129,0.25)]' : 'border-zinc-700/80 shadow-[0_0_40px_rgba(16,185,129,0.08),0_0_2px_rgba(16,185,129,0.3),0_20px_60px_rgba(0,0,0,0.9)]'
+      } backdrop-blur-2xl overflow-hidden ring-1 ring-white/5 transition-all duration-500`}>
         
         {/* Subtle CRT Scanlines Overlay */}
         <div className="terminal-scanlines pointer-events-none absolute inset-0 z-20 opacity-30 mix-blend-overlay" />
@@ -429,16 +489,18 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
 
           {/* Terminal Title */}
           <div className="text-xs font-mono text-zinc-300 flex items-center gap-1.5 font-medium">
-            <span className="text-emerald-400">imlast999@is-a.dev</span>
+            <span className={isGodMode ? 'text-emerald-300 font-bold' : 'text-emerald-400'}>
+              imlast999@is-a.dev
+            </span>
             <span className="text-zinc-600">:</span>
-            <span className="text-cyan-400">~</span>
-            <span className="text-zinc-500">(zsh)</span>
+            <span className="text-cyan-400">{isGodMode ? '/root' : '~'}</span>
+            <span className="text-zinc-500">({isGodMode ? 'godmode' : 'zsh'})</span>
           </div>
 
           {/* Shell Status Tag */}
           <div className="text-right text-[11px] font-mono text-emerald-400/80 flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span>online</span>
+            <span>{isGodMode ? 'ROOT OVERRIDE' : 'online'}</span>
           </div>
         </div>
 
@@ -452,7 +514,11 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
             <div key={item.id} className="space-y-0.5">
               {item.type === 'input' && (
                 <div className="flex items-center gap-2 text-zinc-300">
-                  <span className="text-emerald-400 font-bold whitespace-nowrap select-none">imlast999@is-a.dev ~ %</span>
+                  <span className={`font-bold whitespace-nowrap select-none ${
+                    isGodMode ? 'text-amber-400' : 'text-emerald-400'
+                  }`}>
+                    {promptPrefix}
+                  </span>
                   <span className="text-white font-medium">{item.command}</span>
                 </div>
               )}
@@ -462,8 +528,10 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
 
           {/* Active Input Line with authentic inline green block cursor */}
           <form onSubmit={handleSubmit} className="flex items-center gap-2 pt-1">
-            <span className="text-emerald-400 font-bold whitespace-nowrap select-none">
-              imlast999@is-a.dev ~ %
+            <span className={`font-bold whitespace-nowrap select-none ${
+              isGodMode ? 'text-amber-400' : 'text-emerald-400'
+            }`}>
+              {promptPrefix}
             </span>
             <div 
               className="flex-1 flex items-center relative cursor-text min-h-[20px]"
@@ -473,7 +541,9 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
                 {inputVal}
               </span>
               {/* Authentic thick green block cursor right after the typed text */}
-              <span className="inline-block w-2.5 h-4 bg-emerald-400 animate-terminal-cursor shadow-[0_0_8px_rgba(52,211,153,0.8)] select-none shrink-0" />
+              <span className={`inline-block w-2.5 h-4 ${
+                isGodMode ? 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]' : 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]'
+              } animate-terminal-cursor select-none shrink-0`} />
               <input
                 ref={inputRef}
                 type="text"
