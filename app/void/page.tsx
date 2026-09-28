@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -21,14 +21,10 @@ interface GuestbookEntry {
   timestamp: string
 }
 
-/* Synthesized Web Audio API sound effects - No external audio files */
+/* Synthesized Web Audio API sound effects - Zero external files */
 class SoundEngine {
   private ctx: AudioContext | null = null
   private muted: boolean = false
-
-  constructor() {
-    // Initialized on first user interaction
-  }
 
   private initCtx() {
     if (!this.ctx && typeof window !== 'undefined') {
@@ -46,10 +42,6 @@ class SoundEngine {
     this.muted = m
   }
 
-  isMuted() {
-    return this.muted
-  }
-
   playClick() {
     if (this.muted) return
     this.initCtx()
@@ -60,7 +52,7 @@ class SoundEngine {
       osc.type = 'sine'
       osc.frequency.setValueAtTime(1200, this.ctx.currentTime)
       osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.03)
-      gain.gain.setValueAtTime(0.08, this.ctx.currentTime)
+      gain.gain.setValueAtTime(0.06, this.ctx.currentTime)
       gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.03)
       osc.connect(gain)
       gain.connect(this.ctx.destination)
@@ -173,13 +165,6 @@ const Icons = {
       <line x1="12" y1="2" x2="12" y2="22" />
     </svg>
   ),
-  Torch: () => (
-    <svg className="w-5 h-5 text-orange-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="18" y1="2" x2="22" y2="6" />
-      <path d="m7.5 4.2 9 9-4.2 4.2-9-9Z" />
-      <path d="m2 22 5-5" />
-    </svg>
-  ),
   Terminal: () => (
     <svg className="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="4 17 10 11 4 5" />
@@ -244,23 +229,24 @@ export default function VoidAdventure() {
   const [log, setLog] = useState<string[]>([
     '[INIT] Sector 999 telemetry online.',
     '[STATUS] Orbital void station entered. Atmospheric locks active.',
-    '[OBJECTIVE] Restore auxiliary grid and access internal sectors.',
+    '[OBJECTIVE] Adjust station levers & faders to route power across all sectors.',
   ])
 
-  // --- CHAMBER 1: AIRLOCK STATE ---
+  // --- CHAMBER 1: AIRLOCK LEVER SLIDER ---
   const [lockerOpened, setLockerOpened] = useState(false)
   const [valveAligned, setValveAligned] = useState(false)
-  const [airlockPressure, setAirlockPressure] = useState(30) // Target is 100
+  const [airlockPressure, setAirlockPressure] = useState(25) // Target is 100%
 
-  // --- CHAMBER 2: DATA SERVERS & OSCILLOSCOPE FREQUENCY PUZZLE ---
-  const [freq, setFreq] = useState(380) // Target is 440 MHz
-  const [phase, setPhase] = useState(30) // Target is 90 deg
+  // --- CHAMBER 2: DATA SERVERS FREQUENCY & PHASE SLIDERS ---
+  const [freq, setFreq] = useState(360) // Target is 440 MHz
+  const [phase, setPhase] = useState(20) // Target is 90 deg
   const [serversDecrypted, setServersDecrypted] = useState(false)
   const [extractedShardA, setExtractedShardA] = useState(false)
 
-  // --- CHAMBER 3: REACTOR & 4-COIL PLASMA FLUX BALANCER ---
-  // Target: all 4 coils must reach exactly 100MW (total 400MW)
-  const [coils, setCoils] = useState<[number, number, number, number]>([60, 140, 80, 120])
+  // --- CHAMBER 3: REACTOR THERMAL & MAGNETIC FLUX FADERS ---
+  const [plasmaTemp, setPlasmaTemp] = useState(240) // Target is 350 K
+  const [magneticFlux, setMagneticFlux] = useState(45) // Target is 100 T
+  const [coolantFlow, setCoolantFlow] = useState(30) // Target is 80 L/s
   const [reactorStabilized, setReactorStabilized] = useState(false)
   const [extractedKeycard, setExtractedKeycard] = useState(false)
 
@@ -340,19 +326,18 @@ export default function VoidAdventure() {
       id: 'slate',
       name: 'Diagnostics Slate',
       type: 'DATA_PAD',
-      description: 'Station operational ledger showing sector frequencies.',
-      spec: 'Notation: Data Core carrier tuned to 440MHz @ 90° phase.',
+      description: 'Station engineering ledger showing calibration targets.',
+      spec: 'Targets: Data carrier = 440MHz / 90° phase. Reactor core = 350K temp, 100T flux, 80L/s coolant.',
     }
     setInventory((prev) => [...prev, fuseItem, slateItem])
     sfx.playSuccess()
     addLog('ACQUIRE', 'Opened locker: Obtained [Superconductor Fuse] and [Diagnostics Slate].')
   }
 
-  const handleAdjustPressure = (delta: number) => {
+  const handlePressureSlider = (val: number) => {
+    setAirlockPressure(val)
     sfx.playClick()
-    const nextVal = Math.min(100, Math.max(0, airlockPressure + delta))
-    setAirlockPressure(nextVal)
-    if (nextVal === 100 && !valveAligned) {
+    if (val === 100 && !valveAligned) {
       setValveAligned(true)
       setUnlockedRooms((prev) => ({ ...prev, servers: true }))
       sfx.playPowerUp()
@@ -360,36 +345,37 @@ export default function VoidAdventure() {
     }
   }
 
-  // --- CHAMBER 2 INTERACTIONS (OSCILLOSCOPE HARMONICS) ---
-  const handleAdjustFreq = (delta: number) => {
-    sfx.playClick()
-    const next = Math.max(300, Math.min(600, freq + delta))
-    setFreq(next)
-    checkOscillator(next, phase)
-  }
-
-  const handleAdjustPhase = (delta: number) => {
-    sfx.playClick()
-    const next = Math.max(0, Math.min(180, phase + delta))
-    setPhase(next)
-    checkOscillator(freq, next)
-  }
-
+  // --- CHAMBER 2 INTERACTIONS (OSCILLOSCOPE WAVEFORM GENERATION) ---
   const checkOscillator = (f: number, p: number) => {
     if (f === 440 && p === 90 && !serversDecrypted) {
       setServersDecrypted(true)
       setUnlockedRooms((prev) => ({ ...prev, reactor: true }))
       sfx.playSuccess()
-      addLog('DECRYPTED', 'Signal resonance locked at 440MHz / 90°. Server banks initialized.')
+      addLog('DECRYPTED', 'Carrier resonance locked at 440MHz / 90°. Quantum server banks initialized.')
       addLog('UNLOCKED', 'Reactor core access corridor unlocked!')
     }
   }
+
+  const generateWavePath = (f: number, p: number) => {
+    // Generate SVG path for a sine wave across width 400, height 100
+    const points: string[] = []
+    const cycles = (f / 100) * 1.5
+    const phaseRad = (p * Math.PI) / 180
+    for (let x = 0; x <= 400; x += 4) {
+      const y = 50 + 35 * Math.sin(((x / 400) * cycles * 2 * Math.PI) + phaseRad)
+      points.push(`${x},${y.toFixed(1)}`)
+    }
+    return `M ${points.join(' L ')}`
+  }
+
+  const targetWavePath = useMemo(() => generateWavePath(440, 90), [])
+  const playerWavePath = useMemo(() => generateWavePath(freq, phase), [freq, phase])
 
   const handleExtractShardA = () => {
     sfx.playClick()
     if (!serversDecrypted) {
       sfx.playError()
-      addLog('LOCKED', 'Mainframe encrypted. Align harmonic wave first.')
+      addLog('LOCKED', 'Mainframe encrypted. Align harmonic wave faders first.')
       return
     }
     if (extractedShardA) {
@@ -409,56 +395,21 @@ export default function VoidAdventure() {
     addLog('ACQUIRE', 'Downloaded [Decryption Shard A] payload: "VOID".')
   }
 
-  // --- CHAMBER 3 INTERACTIONS (PLASMA COIL BALANCER) ---
-  const handleShiftFlux = (index: number) => {
-    sfx.playClick()
-    if (reactorStabilized) {
-      addLog('STABLE', 'Plasma core is already locked in harmonic equilibrium.')
-      return
+  // --- CHAMBER 3 INTERACTIONS (THERMAL & MAGNETIC FLUX FADERS) ---
+  const checkReactorEquilibrium = (temp: number, flux: number, coolant: number) => {
+    if (temp === 350 && flux === 100 && coolant === 80 && !reactorStabilized) {
+      setReactorStabilized(true)
+      setUnlockedRooms((prev) => ({ ...prev, vault: true }))
+      sfx.playPowerUp()
+      addLog('THERMAL_OK', 'Plasma core equilibrium achieved (350K / 100T / 80L/s). Sector 04 [Security Vault] energized!')
     }
-
-    setCoils((prev) => {
-      const next: [number, number, number, number] = [...prev]
-      if (index === 0) {
-        // Coil Alpha (+20 Alpha, -20 Beta)
-        next[0] = Math.min(160, next[0] + 20)
-        next[1] = Math.max(40, next[1] - 20)
-      } else if (index === 1) {
-        // Coil Beta (+20 Beta, -20 Gamma)
-        next[1] = Math.min(160, next[1] + 20)
-        next[2] = Math.max(40, next[2] - 20)
-      } else if (index === 2) {
-        // Coil Gamma (+20 Gamma, -20 Delta)
-        next[2] = Math.min(160, next[2] + 20)
-        next[3] = Math.max(40, next[3] - 20)
-      } else {
-        // Coil Delta (+20 Delta, -20 Alpha)
-        next[3] = Math.min(160, next[3] + 20)
-        next[0] = Math.max(40, next[0] - 20)
-      }
-
-      // Check if all four are exactly 100MW
-      if (next[0] === 100 && next[1] === 100 && next[2] === 100 && next[3] === 100) {
-        setReactorStabilized(true)
-        setUnlockedRooms((p) => ({ ...p, vault: true }))
-        sfx.playPowerUp()
-        addLog('REACTOR_100', 'Plasma magnetic equilibrium achieved (100-100-100-100MW). Sector 04 [Security Vault] energized!')
-      }
-      return next
-    })
-  }
-
-  const handleResetCoils = () => {
-    sfx.playClick()
-    setCoils([60, 140, 80, 120])
-    addLog('RESET', 'Plasma magnetic coils re-initialized to default baseline.')
   }
 
   const handleExtractKeycard = () => {
     sfx.playClick()
     if (!reactorStabilized) {
       sfx.playError()
-      addLog('HAZARD', 'Radiation containment active. Balance plasma coils before manual extraction.')
+      addLog('HAZARD', 'Radiation containment active. Balance thermal & flux faders before extraction.')
       return
     }
     if (extractedKeycard) {
@@ -509,7 +460,7 @@ export default function VoidAdventure() {
     } else {
       setCipherError(true)
       sfx.playError()
-      addLog('CIPHER_DENIED', 'Cipher rejected. Combine Shard A ("VOID") from Sector 02 and Shard B ("999") from Sector 03.')
+      addLog('CIPHER_DENIED', 'Cipher rejected. Combine Shard A ("VOID") and Shard B ("999") from inventory.')
       setTimeout(() => setCipherError(false), 2400)
     }
   }
@@ -640,7 +591,7 @@ export default function VoidAdventure() {
               </div>
             </div>
 
-            {/* Interactive Viewport Canvas */}
+            {/* Viewport */}
             <div className="relative rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-950 aspect-[16/9] max-h-[460px] shadow-2xl group">
               <Image
                 src="/images/void_airlock.jpg"
@@ -657,7 +608,7 @@ export default function VoidAdventure() {
                 [CAM_01: AIRLOCK_SUBDECK]
               </div>
               <div className="pointer-events-none absolute top-3 right-4 text-[10px] text-emerald-400 font-mono">
-                VALVE EQUALIZER: {valveAligned ? 'SECTOR 02 UNLOCKED' : 'INTERLOCKED'}
+                EQUALIZATION: {valveAligned ? 'SECTOR 02 UNLOCKED' : 'INTERLOCKED'}
               </div>
 
               {/* HOTSPOT 1: Maintenance Locker */}
@@ -674,32 +625,7 @@ export default function VoidAdventure() {
                 </div>
               </button>
 
-              {/* HOTSPOT 2: Hydraulic Valve Equalizer */}
-              <div className="absolute top-[68%] left-[50%] -translate-x-1/2 -translate-y-1/2 p-2.5 rounded-lg bg-black/85 border border-zinc-700 max-w-xs text-center space-y-2 shadow-2xl">
-                <span className="text-[10px] text-zinc-400 uppercase tracking-wider block">
-                  Atmospheric Equalizer ({airlockPressure}/100%)
-                </span>
-                <div className="flex items-center justify-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleAdjustPressure(-10)}
-                    disabled={valveAligned || airlockPressure <= 0}
-                    className="px-2 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-[10px] border border-zinc-800 cursor-pointer disabled:opacity-40"
-                  >
-                    -10%
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleAdjustPressure(10)}
-                    disabled={valveAligned || airlockPressure >= 100}
-                    className="px-2.5 py-1 rounded bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-800 text-emerald-300 text-[10px] cursor-pointer disabled:opacity-40"
-                  >
-                    +10% Equalize
-                  </button>
-                </div>
-              </div>
-
-              {/* HOTSPOT 3: Passage to Sector 02 */}
+              {/* HOTSPOT 2: Passage to Sector 02 */}
               <button
                 type="button"
                 onClick={() => navigateTo('servers')}
@@ -715,67 +641,89 @@ export default function VoidAdventure() {
               </button>
             </div>
 
-            {/* Tactical Control Modules Below Viewport */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <button
-                type="button"
-                onClick={handleInspectLocker}
-                className="p-4 rounded-xl bg-[#09090e] border border-zinc-800 hover:border-zinc-700 transition-all text-left space-y-2 cursor-pointer group"
-              >
+            {/* Tactical Control Modules Below Viewport with Tactile Range Slider */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+              {/* Locker Object Card */}
+              <div className="md:col-span-4 p-5 rounded-xl bg-[#09090e] border border-zinc-800 space-y-3">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-zinc-400">OBJECT 01</span>
+                  <span className="text-zinc-400 uppercase tracking-wider font-semibold">Substation Locker</span>
                   <span className={`text-[10px] px-2 py-0.5 rounded ${lockerOpened ? 'bg-zinc-900 text-zinc-500' : 'bg-emerald-950/60 text-emerald-400 border border-emerald-800'}`}>
-                    {lockerOpened ? 'EXTRACTED' : 'INTERACT'}
+                    {lockerOpened ? 'ACQUIRED' : 'INTERACTIVE'}
                   </span>
                 </div>
-                <div className="text-sm text-zinc-200 group-hover:text-emerald-400 transition-colors">
-                  Maintenance Locker
-                </div>
-                <p className="text-[11px] text-zinc-400">
-                  {lockerOpened ? 'Equipment stored in inventory.' : 'Scan auxiliary compartment.'}
+                <p className="text-xs text-zinc-400 font-sans">
+                  {lockerOpened
+                    ? 'Superconductor Fuse and Diagnostics Slate stored in your inventory deck.'
+                    : 'Emergency field supplies sealed in the auxiliary bulkhead compartment.'}
                 </p>
-              </button>
-
-              <div className="p-4 rounded-xl bg-[#09090e] border border-zinc-800 space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-zinc-400">PUZZLE 01</span>
-                  <span className={`text-[10px] px-2 py-0.5 rounded ${valveAligned ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800' : 'bg-amber-950/60 text-amber-400 border border-amber-800'}`}>
-                    {valveAligned ? 'EQUALIZED' : 'INCOMPLETE'}
-                  </span>
-                </div>
-                <div className="text-sm text-zinc-200">
-                  Atmospheric Equalizer
-                </div>
-                <p className="text-[11px] text-zinc-400">
-                  Equalize pressure to 100% to uncouple the hydraulic corridor bulkhead.
-                </p>
+                {!lockerOpened && (
+                  <button
+                    type="button"
+                    onClick={handleInspectLocker}
+                    className="w-full py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-750 hover:border-emerald-400 text-xs text-zinc-200 hover:text-white transition-all cursor-pointer"
+                  >
+                    Unlatch Storage Cell
+                  </button>
+                )}
               </div>
 
-              <button
-                type="button"
-                onClick={() => navigateTo('servers')}
-                disabled={!valveAligned}
-                className="p-4 rounded-xl bg-[#09090e] border border-zinc-800 hover:border-zinc-700 transition-all text-left space-y-2 cursor-pointer group disabled:opacity-40"
-              >
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-zinc-400">PASSAGE</span>
-                  <span className={`text-[10px] px-2 py-0.5 rounded ${valveAligned ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800' : 'bg-zinc-900 text-zinc-500'}`}>
-                    {valveAligned ? 'OPEN' : 'LOCKED'}
+              {/* Atmospheric Pressure Fader Slider */}
+              <div className="md:col-span-8 p-5 rounded-xl bg-[#09090e] border border-zinc-800 space-y-4">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="space-y-0.5">
+                    <span className="text-xs text-white uppercase tracking-wider font-semibold block">
+                      Atmospheric Pressure Equalization Lever
+                    </span>
+                    <p className="text-xs text-zinc-400 font-sans">
+                      Drag the hydraulic fader lever to 100% to decompress the passage to Sector 02.
+                    </p>
+                  </div>
+                  <span className={`text-xs font-mono px-2.5 py-1 rounded border font-bold ${
+                    airlockPressure === 100
+                      ? 'bg-emerald-950/80 text-emerald-300 border-emerald-700'
+                      : 'bg-zinc-900 text-amber-400 border-zinc-800'
+                  }`}>
+                    {airlockPressure}% / 100% EQUALIZED
                   </span>
                 </div>
-                <div className="text-sm text-zinc-200 group-hover:text-emerald-400 transition-colors">
-                  Corridor to Data Core
+
+                <div className="space-y-2 pt-2">
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="5"
+                    value={airlockPressure}
+                    disabled={valveAligned}
+                    onChange={(e) => handlePressureSlider(Number(e.target.value))}
+                    className="cyber-slider"
+                  />
+                  <div className="flex justify-between text-[10px] text-zinc-500 font-mono">
+                    <span>0% (Vacuum)</span>
+                    <span className="text-zinc-400">Target: 100% Equalization</span>
+                    <span>100% (Pressurized)</span>
+                  </div>
                 </div>
-                <p className="text-[11px] text-zinc-400">
-                  Proceed to server archives upon pressure equalization.
-                </p>
-              </button>
+
+                {valveAligned && (
+                  <div className="pt-2 border-t border-zinc-850 flex items-center justify-between text-xs text-emerald-400">
+                    <span>Hydraulic bulkhead released.</span>
+                    <button
+                      type="button"
+                      onClick={() => navigateTo('servers')}
+                      className="text-emerald-400 hover:text-emerald-300 font-bold underline cursor-pointer"
+                    >
+                      Enter Sector 02: Data Core →
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </section>
         )}
 
         {/* ======================================================== */}
-        {/* CHAMBER 02: SEVERED DATA CORE & OSCILLOSCOPE PUZZLE     */}
+        {/* CHAMBER 02: SEVERED DATA CORE & OSCILLOSCOPE FADERS      */}
         {/* ======================================================== */}
         {currentRoom === 'servers' && (
           <section className="space-y-6">
@@ -789,11 +737,11 @@ export default function VoidAdventure() {
                 </h1>
               </div>
               <div className="text-right text-[11px] text-zinc-400">
-                HARMONIC LOCK: {serversDecrypted ? 'ONLINE (440MHz / 90°)' : 'DESYNCHRONIZED'}
+                HARMONIC LOCK: {serversDecrypted ? 'ONLINE (440MHz / 90°)' : 'NOISE DISTORTION'}
               </div>
             </div>
 
-            {/* Viewport for Server Chamber */}
+            {/* Viewport */}
             <div className="relative rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-950 aspect-[16/9] max-h-[460px] shadow-2xl group">
               <Image
                 src="/images/void_servers.jpg"
@@ -830,92 +778,127 @@ export default function VoidAdventure() {
               )}
             </div>
 
-            {/* Oscilloscope Frequency Tuning Puzzle Console */}
+            {/* Oscilloscope Frequency Tuning Console with Sliders & Live Waveform */}
             <div className="p-6 rounded-2xl bg-[#09090e] border border-zinc-800 space-y-5">
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
                     <Icons.Slate />
                     <h3 className="text-sm font-semibold text-white uppercase tracking-wider">
-                      Carrier Frequency Calibration Console
+                      Oscilloscope Carrier Calibration Faders
                     </h3>
                   </div>
                   <p className="text-xs text-zinc-400 font-sans">
-                    Match the wave parameters found on the Maintenance Slate (Target: 440MHz / 90° Phase).
+                    Use the frequency and phase sliders to superimpose your wave onto the carrier target (Clue on Diagnostics Slate: 440MHz / 90° Phase).
                   </p>
                 </div>
 
                 <span className={`text-[10px] px-2.5 py-1 rounded font-mono ${serversDecrypted ? 'bg-cyan-950 text-cyan-400 border border-cyan-800' : 'bg-amber-950/60 text-amber-400 border border-amber-800'}`}>
-                  {serversDecrypted ? 'HARMONIC ALIGNED' : 'SEEKING FREQUENCY'}
+                  {serversDecrypted ? 'HARMONIC SYNCHRONIZED' : 'SEEKING FREQUENCY'}
                 </span>
               </div>
 
-              {/* Visual Wave Simulation Bar */}
-              <div className="p-4 rounded-xl bg-black/80 border border-zinc-850 space-y-3 font-mono text-xs">
-                <div className="flex items-center justify-between text-zinc-400 text-[11px]">
-                  <span>FREQUENCY: <span className="text-cyan-400 font-bold">{freq} MHz</span> (Target: 440 MHz)</span>
-                  <span>PHASE: <span className="text-purple-400 font-bold">{phase}°</span> (Target: 90°)</span>
-                </div>
-
-                {/* Progress bar visualizing harmonic proximity */}
-                <div className="w-full h-3 rounded-full bg-zinc-900 overflow-hidden flex items-center p-0.5 border border-zinc-800">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 transition-all duration-300"
-                    style={{
-                      width: `${Math.max(5, 100 - (Math.abs(freq - 440) + Math.abs(phase - 90)))}%`,
-                    }}
+              {/* Live Real-Time SVG Waveform Display */}
+              <div className="relative h-28 rounded-xl bg-black/90 border border-zinc-800 p-2 overflow-hidden flex items-center justify-center">
+                <svg className="w-full h-full" viewBox="0 0 400 100" preserveAspectRatio="none">
+                  {/* Grid Lines */}
+                  <line x1="0" y1="50" x2="400" y2="50" stroke="#27272a" strokeDasharray="3 3" />
+                  <line x1="100" y1="0" x2="100" y2="100" stroke="#27272a" strokeDasharray="3 3" />
+                  <line x1="200" y1="0" x2="200" y2="100" stroke="#27272a" strokeDasharray="3 3" />
+                  <line x1="300" y1="0" x2="300" y2="100" stroke="#27272a" strokeDasharray="3 3" />
+                  
+                  {/* Target Carrier Ghost Wave (Cyan Dashed) */}
+                  <path
+                    d={targetWavePath}
+                    fill="none"
+                    stroke="#06b6d4"
+                    strokeWidth="1.75"
+                    strokeDasharray="4 4"
+                    className="opacity-45"
                   />
+                  
+                  {/* Player Live Real-Time Wave */}
+                  <path
+                    d={playerWavePath}
+                    fill="none"
+                    stroke={serversDecrypted ? '#10b981' : '#c084fc'}
+                    strokeWidth="2.5"
+                    className={serversDecrypted ? 'filter drop-shadow-[0_0_10px_rgba(16,185,129,0.9)]' : ''}
+                  />
+                </svg>
+
+                <div className="absolute top-2 left-3 text-[10px] text-zinc-500 font-mono">
+                  [OSC_CHANNEL: SIG_A]
+                </div>
+                <div className="absolute bottom-2 right-3 text-[10px] text-zinc-400 font-mono">
+                  {serversDecrypted ? 'HARMONIC LOCK CONFIRMED (440MHz @ 90°)' : 'SEEKING CARRIER SYNC'}
                 </div>
               </div>
 
-              {/* Tuning Buttons */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-3.5 rounded-xl bg-black/60 border border-zinc-850 space-y-2">
-                  <span className="text-[11px] text-zinc-400 block font-semibold">Frequency Stepper (MHz):</span>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleAdjustFreq(-20)}
-                      disabled={serversDecrypted}
-                      className="flex-1 py-1.5 rounded bg-zinc-900 hover:bg-zinc-800 text-xs border border-zinc-800 cursor-pointer disabled:opacity-40"
-                    >
-                      -20 MHz
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleAdjustFreq(20)}
-                      disabled={serversDecrypted}
-                      className="flex-1 py-1.5 rounded bg-zinc-900 hover:bg-zinc-800 text-xs border border-zinc-800 cursor-pointer disabled:opacity-40"
-                    >
-                      +20 MHz
-                    </button>
+              {/* Interactive Fader Sliders */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {/* Frequency Slider */}
+                <div className="p-4 rounded-xl bg-black/60 border border-zinc-850 space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-zinc-400 font-semibold">Carrier Frequency Fader:</span>
+                    <span className={`text-xs font-mono font-bold ${freq === 440 ? 'text-emerald-400' : 'text-cyan-400'}`}>
+                      {freq} MHz
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="300"
+                    max="600"
+                    step="5"
+                    value={freq}
+                    disabled={serversDecrypted}
+                    onChange={(e) => {
+                      const val = Number(e.target.value)
+                      setFreq(val)
+                      sfx.playClick()
+                      checkOscillator(val, phase)
+                    }}
+                    className="cyber-slider"
+                  />
+                  <div className="flex justify-between text-[10px] text-zinc-500 font-mono">
+                    <span>300 MHz</span>
+                    <span className="text-zinc-400">Target: 440 MHz</span>
+                    <span>600 MHz</span>
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-black/60 border border-zinc-850 space-y-2">
-                  <span className="text-[11px] text-zinc-400 block font-semibold">Phase Shift (°):</span>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleAdjustPhase(-15)}
-                      disabled={serversDecrypted}
-                      className="flex-1 py-1.5 rounded bg-zinc-900 hover:bg-zinc-800 text-xs border border-zinc-800 cursor-pointer disabled:opacity-40"
-                    >
-                      -15°
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleAdjustPhase(15)}
-                      disabled={serversDecrypted}
-                      className="flex-1 py-1.5 rounded bg-zinc-900 hover:bg-zinc-800 text-xs border border-zinc-800 cursor-pointer disabled:opacity-40"
-                    >
-                      +15°
-                    </button>
+                {/* Phase Slider */}
+                <div className="p-4 rounded-xl bg-black/60 border border-zinc-850 space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-zinc-400 font-semibold">Phase Angle Fader:</span>
+                    <span className={`text-xs font-mono font-bold ${phase === 90 ? 'text-emerald-400' : 'text-purple-400'}`}>
+                      {phase}°
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="180"
+                    step="5"
+                    value={phase}
+                    disabled={serversDecrypted}
+                    onChange={(e) => {
+                      const val = Number(e.target.value)
+                      setPhase(val)
+                      sfx.playClick()
+                      checkOscillator(freq, val)
+                    }}
+                    className="cyber-slider"
+                  />
+                  <div className="flex justify-between text-[10px] text-zinc-500 font-mono">
+                    <span>0°</span>
+                    <span className="text-zinc-400">Target: 90°</span>
+                    <span>180°</span>
                   </div>
                 </div>
               </div>
 
-              {/* Next Navigation */}
+              {/* Navigation */}
               <div className="pt-3 border-t border-zinc-850 flex items-center justify-between">
                 <button
                   type="button"
@@ -940,7 +923,7 @@ export default function VoidAdventure() {
         )}
 
         {/* ======================================================== */}
-        {/* CHAMBER 03: PLASMA CORE & 4-COIL EQUILIBRIUM PUZZLE      */}
+        {/* CHAMBER 03: PLASMA CORE & THERMAL FLUX SLIDERS          */}
         {/* ======================================================== */}
         {currentRoom === 'reactor' && (
           <section className="space-y-6">
@@ -954,11 +937,11 @@ export default function VoidAdventure() {
                 </h1>
               </div>
               <div className="text-right text-[11px] text-zinc-400">
-                CONTAINMENT STATUS: {reactorStabilized ? 'LOCKED EQUILIBRIUM' : 'UNBALANCED FLUX'}
+                CONTAINMENT STATUS: {reactorStabilized ? 'LOCKED EQUILIBRIUM' : 'UNSTABLE FLUX'}
               </div>
             </div>
 
-            {/* Viewport for Reactor */}
+            {/* Viewport */}
             <div className="relative rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-950 aspect-[16/9] max-h-[460px] shadow-2xl group">
               <Image
                 src="/images/void_reactor.jpg"
@@ -975,7 +958,7 @@ export default function VoidAdventure() {
                 [CAM_03: PLASMA_CONTAINMENT_RING]
               </div>
               <div className="pointer-events-none absolute top-3 right-4 text-[10px] text-emerald-400 font-mono">
-                OUTPUT: {coils.reduce((a, b) => a + b, 0)} MW / 400 MW
+                TEMP: {plasmaTemp}K · FLUX: {magneticFlux}T · COOLANT: {coolantFlow}L/s
               </div>
 
               {/* Extraction Hotspot */}
@@ -995,73 +978,117 @@ export default function VoidAdventure() {
               )}
             </div>
 
-            {/* Plasma Coils Flux Balancer Puzzle */}
+            {/* Plasma Thermal & Flux Fader Controls */}
             <div className="p-6 rounded-2xl bg-[#09090e] border border-zinc-800 space-y-5">
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
                     <Icons.Fuse />
                     <h3 className="text-sm font-semibold text-white uppercase tracking-wider">
-                      Magnetic Plasma Balancer (Target: 100 MW Each)
+                      Core Thermodynamic & Confinement Faders
                     </h3>
                   </div>
                   <p className="text-xs text-zinc-400 font-sans">
-                    Shift energy through the inductive relays to balance all 4 coils to exactly 100 MW.
+                    Align core temperature, magnetic flux, and cryogenic coolant levers (Clue on Diagnostics Slate: 350K / 100T / 80L/s).
                   </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={handleResetCoils}
-                  disabled={reactorStabilized}
-                  className="px-3 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-[11px] text-zinc-400 hover:text-white border border-zinc-800 cursor-pointer disabled:opacity-40"
-                >
-                  Reset Coils
-                </button>
+                <span className={`text-[10px] px-2.5 py-1 rounded font-mono ${reactorStabilized ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-amber-950/60 text-amber-400 border border-amber-800'}`}>
+                  {reactorStabilized ? 'EQUILIBRIUM ACHIEVED' : 'ADJUSTING PARAMETERS'}
+                </span>
               </div>
 
-              {/* 4 Coil Bars */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {coils.map((flux, i) => {
-                  const names = ['Alpha', 'Beta', 'Gamma', 'Delta']
-                  const isPerfect = flux === 100
+              {/* 3 Interactive Faders */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* 1. Core Temperature Slider */}
+                <div className="p-4 rounded-xl bg-black/60 border border-zinc-850 space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-zinc-400 font-semibold">Core Temperature:</span>
+                    <span className={`text-xs font-mono font-bold ${plasmaTemp === 350 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                      {plasmaTemp} K
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="150"
+                    max="550"
+                    step="5"
+                    value={plasmaTemp}
+                    disabled={reactorStabilized}
+                    onChange={(e) => {
+                      const val = Number(e.target.value)
+                      setPlasmaTemp(val)
+                      sfx.playClick()
+                      checkReactorEquilibrium(val, magneticFlux, coolantFlow)
+                    }}
+                    className="cyber-slider"
+                  />
+                  <div className="flex justify-between text-[10px] text-zinc-500 font-mono">
+                    <span>150 K</span>
+                    <span className="text-zinc-400">Target: 350 K</span>
+                    <span>550 K</span>
+                  </div>
+                </div>
 
-                  return (
-                    <div
-                      key={i}
-                      className={`p-4 rounded-xl border flex flex-col justify-between space-y-3 ${
-                        isPerfect
-                          ? 'bg-emerald-950/40 border-emerald-500/50'
-                          : 'bg-black/60 border-zinc-850'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-zinc-400 font-bold">Coil {names[i]}</span>
-                        <span className={`text-[10px] ${isPerfect ? 'text-emerald-400 font-bold' : 'text-zinc-400'}`}>
-                          {flux} MW
-                        </span>
-                      </div>
+                {/* 2. Magnetic Confinement Field Slider */}
+                <div className="p-4 rounded-xl bg-black/60 border border-zinc-850 space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-zinc-400 font-semibold">Magnetic Confinement:</span>
+                    <span className={`text-xs font-mono font-bold ${magneticFlux === 100 ? 'text-emerald-400' : 'text-cyan-400'}`}>
+                      {magneticFlux} T
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="20"
+                    max="180"
+                    step="5"
+                    value={magneticFlux}
+                    disabled={reactorStabilized}
+                    onChange={(e) => {
+                      const val = Number(e.target.value)
+                      setMagneticFlux(val)
+                      sfx.playClick()
+                      checkReactorEquilibrium(plasmaTemp, val, coolantFlow)
+                    }}
+                    className="cyber-slider"
+                  />
+                  <div className="flex justify-between text-[10px] text-zinc-500 font-mono">
+                    <span>20 T</span>
+                    <span className="text-zinc-400">Target: 100 T</span>
+                    <span>180 T</span>
+                  </div>
+                </div>
 
-                      <div className="w-full h-2 rounded-full bg-zinc-900 overflow-hidden">
-                        <div
-                          className={`h-full transition-all duration-300 ${
-                            isPerfect ? 'bg-emerald-400' : 'bg-cyan-500'
-                          }`}
-                          style={{ width: `${Math.min(100, (flux / 160) * 100)}%` }}
-                        />
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() => handleShiftFlux(i)}
-                        disabled={reactorStabilized}
-                        className="w-full py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-750 text-[11px] text-zinc-200 hover:text-white transition-all cursor-pointer disabled:opacity-40"
-                      >
-                        Shift Flux ↵
-                      </button>
-                    </div>
-                  )
-                })}
+                {/* 3. Coolant Injection Flow Slider */}
+                <div className="p-4 rounded-xl bg-black/60 border border-zinc-850 space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-zinc-400 font-semibold">Coolant Injection:</span>
+                    <span className={`text-xs font-mono font-bold ${coolantFlow === 80 ? 'text-emerald-400' : 'text-purple-400'}`}>
+                      {coolantFlow} L/s
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="160"
+                    step="5"
+                    value={coolantFlow}
+                    disabled={reactorStabilized}
+                    onChange={(e) => {
+                      const val = Number(e.target.value)
+                      setCoolantFlow(val)
+                      sfx.playClick()
+                      checkReactorEquilibrium(plasmaTemp, magneticFlux, val)
+                    }}
+                    className="cyber-slider"
+                  />
+                  <div className="flex justify-between text-[10px] text-zinc-500 font-mono">
+                    <span>0 L/s</span>
+                    <span className="text-zinc-400">Target: 80 L/s</span>
+                    <span>160 L/s</span>
+                  </div>
+                </div>
               </div>
 
               {/* Navigation */}
@@ -1107,7 +1134,7 @@ export default function VoidAdventure() {
               </div>
             </div>
 
-            {/* Viewport for Vault Door */}
+            {/* Viewport */}
             <div className="relative rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-950 aspect-[16/9] max-h-[460px] shadow-2xl group">
               <Image
                 src="/images/void_vault.jpg"
