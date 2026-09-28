@@ -39,13 +39,9 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
       id: 'welcome-1',
       type: 'output',
       content: (
-        <div className="text-zinc-300 font-mono text-xs sm:text-sm leading-relaxed space-y-1">
-          <p className="text-zinc-500">
-            Last login: {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} on ttys001
-          </p>
-          <p className="text-zinc-400">
-            zsh 5.9 <span className="text-emerald-400/80">(x86_64-void-space)</span> — Type <span className="text-emerald-400 font-bold underline decoration-emerald-500/50">help</span> to view commands.
-          </p>
+        <div className="text-zinc-400 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
+          Last login: {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} on ttys001{'\n'}
+          zsh 5.9 (x86_64-void-space) — Type 'help' for available commands.
         </div>
       ),
     },
@@ -100,64 +96,21 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           id: `out-${Date.now()}`,
           type: 'output',
           content: (
-            <div className="text-zinc-300 font-mono text-xs sm:text-sm leading-relaxed py-1 space-y-2">
-              <div className="text-zinc-400 font-semibold border-b border-zinc-800/80 pb-1">
-                SYSTEM COMMANDS & UTILITIES:
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 pt-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-400 font-bold">about</span>
-                  <span className="text-zinc-400 text-xs">developer overview</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-400 font-bold">setup</span>
-                  <span className="text-zinc-400 text-xs">hardware & workstation</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-400 font-bold">skills</span>
-                  <span className="text-zinc-400 text-xs">tech stack & frameworks</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-400 font-bold">projects</span>
-                  <span className="text-zinc-400 text-xs">featured applications</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-400 font-bold">socials</span>
-                  <span className="text-zinc-400 text-xs">connected network endpoints</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-400 font-bold">contact</span>
-                  <span className="text-zinc-400 text-xs">direct communication</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-400 font-bold">whoami</span>
-                  <span className="text-zinc-400 text-xs">current identity info</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-400 font-bold">uname</span>
-                  <span className="text-zinc-400 text-xs">kernel & architecture</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-400 font-bold">ls</span>
-                  <span className="text-zinc-400 text-xs">list virtual filesystem</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-400 font-bold">matrix</span>
-                  <span className="text-zinc-400 text-xs">digital stream simulation</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-400 font-bold">history</span>
-                  <span className="text-zinc-400 text-xs">view entered commands</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-400 font-bold">clear</span>
-                  <span className="text-zinc-400 text-xs">wipe console buffer</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-400 font-bold">sudo</span>
-                  <span className="text-zinc-400 text-xs">super user elevation</span>
-                </div>
-              </div>
+            <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
+              zsh: available commands:{'\n'}
+              {'  '}about       developer profile and bio{'\n'}
+              {'  '}setup       hardware specs and workstation rig{'\n'}
+              {'  '}skills      technical competencies and stack{'\n'}
+              {'  '}projects    featured applications and repos{'\n'}
+              {'  '}socials     connected network endpoints{'\n'}
+              {'  '}contact     direct communication channels{'\n'}
+              {'  '}whoami      print current user identity{'\n'}
+              {'  '}uname       print system kernel and architecture{'\n'}
+              {'  '}ls          list directory contents{'\n'}
+              {'  '}matrix      digital stream simulation{'\n'}
+              {'  '}history     view command history{'\n'}
+              {'  '}clear       wipe terminal screen{'\n'}
+              {'  '}sudo        execute with root privileges
             </div>
           ),
         })
@@ -169,16 +122,12 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           id: `out-${Date.now()}`,
           type: 'output',
           content: (
-            <div className="text-zinc-300 font-mono text-xs sm:text-sm leading-relaxed p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 space-y-1.5">
-              <div className="flex items-center gap-2 pb-1 border-b border-zinc-800/80">
-                <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                <span className="text-white font-bold tracking-wide">IDENTITY PROFILE</span>
-              </div>
-              <p><span className="text-zinc-500 font-semibold w-24 inline-block">User:</span> <span className="text-emerald-400">imlast999</span></p>
-              <p><span className="text-zinc-500 font-semibold w-24 inline-block">Role:</span> Builder & Creative Systems Developer</p>
-              <p><span className="text-zinc-500 font-semibold w-24 inline-block">Domain:</span> <span className="text-cyan-400 underline">imlast999.is-a.dev</span></p>
-              <p><span className="text-zinc-500 font-semibold w-24 inline-block">Focus:</span> Quantitative Trading Systems (LastEdge), Web3 Apps, Mobile UI Engineering</p>
-              <p><span className="text-zinc-500 font-semibold w-24 inline-block">Summary:</span> Architecting high-performance trading pipelines, reactive web applications and sleek interfaces.</p>
+            <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
+              user:     imlast999{'\n'}
+              role:     builder / creative developer / crypto explorer{'\n'}
+              domain:   imlast999.is-a.dev{'\n'}
+              focus:    quantitative systems (LastEdge), Web3 portals, mobile UI{'\n'}
+              bio:      crafting high-performance systems and algorithmic software.
             </div>
           ),
         })
@@ -190,19 +139,15 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           id: `out-${Date.now()}`,
           type: 'output',
           content: (
-            <div className="text-zinc-300 font-mono text-xs sm:text-sm leading-relaxed p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 space-y-2">
-              <div className="flex items-center justify-between pb-1 border-b border-zinc-800/80">
-                <span className="text-emerald-400 font-bold">imlast999@workstation</span>
-                <span className="text-zinc-500 text-[11px]">x86_64-void</span>
-              </div>
-              <div className="grid grid-cols-1 gap-1 pt-1">
-                <p><span className="text-emerald-400 font-bold inline-block w-20">OS:</span> Windows 11 Pro [Version 10.0.22631]</p>
-                <p><span className="text-emerald-400 font-bold inline-block w-20">CPU:</span> 12th Gen Intel(R) Core(TM) i5-12400F (12 CPUs) @ 4.40GHz</p>
-                <p><span className="text-emerald-400 font-bold inline-block w-20">GPU:</span> NVIDIA GeForce RTX 4060 Ti (8GB GDDR6)</p>
-                <p><span className="text-emerald-400 font-bold inline-block w-20">RAM:</span> 32 GB DDR4 High-Speed Dual-Channel</p>
-                <p><span className="text-emerald-400 font-bold inline-block w-20">Storage:</span> WD Blue SN580 1TB NVMe SSD (PCIe 4.0)</p>
-                <p><span className="text-emerald-400 font-bold inline-block w-20">Shell:</span> zsh 5.9 (custom cosmic theme)</p>
-              </div>
+            <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
+              OS:       Windows 11 Pro [Version 10.0.22631]{'\n'}
+              Host:     imlast999-station{'\n'}
+              Kernel:   x86_64-void{'\n'}
+              CPU:      12th Gen Intel(R) Core(TM) i5-12400F (12) @ 4.40GHz{'\n'}
+              GPU:      NVIDIA GeForce RTX 4060 Ti 8GB{'\n'}
+              Memory:   32768MB (32 GB DDR4){'\n'}
+              Disk:     WD Blue SN580 1TB NVMe SSD (PCIe 4.0){'\n'}
+              Shell:    zsh 5.9
             </div>
           ),
         })
@@ -214,16 +159,11 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           id: `out-${Date.now()}`,
           type: 'output',
           content: (
-            <div className="text-zinc-300 font-mono text-xs sm:text-sm leading-relaxed p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 space-y-2">
-              <div className="text-emerald-400 font-bold pb-1 border-b border-zinc-800/80">
-                CORE TECHNICAL COMPETENCIES:
-              </div>
-              <div className="space-y-1.5 pt-1">
-                <p><span className="text-cyan-400 font-semibold w-28 inline-block">Languages:</span> TypeScript, JavaScript, Python, Solidity, Kotlin, C</p>
-                <p><span className="text-cyan-400 font-semibold w-28 inline-block">Frontend:</span> Next.js 15, React 19, TailwindCSS v4, GSAP, WebGL</p>
-                <p><span className="text-cyan-400 font-semibold w-28 inline-block">Trading/Algo:</span> MetaTrader 5, Walk-Forward Optimization, Monte Carlo Risk</p>
-                <p><span className="text-cyan-400 font-semibold w-28 inline-block">Systems/Web3:</span> Viem, Web3.js, Docker, Git, Linux CLI, Android SDK</p>
-              </div>
+            <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
+              LANGUAGES:    TypeScript, JavaScript, Python, Solidity, Kotlin, C{'\n'}
+              FRAMEWORKS:   Next.js 15, React 19, TailwindCSS v4, GSAP, WebGL{'\n'}
+              QUANT & ALGO: MetaTrader 5, Strategy Backtesting, Monte Carlo Simulation{'\n'}
+              SYSTEMS:      Linux CLI, Git, Vercel CI/CD, Docker, Android SDK
             </div>
           ),
         })
@@ -234,25 +174,11 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           id: `out-${Date.now()}`,
           type: 'output',
           content: (
-            <div className="text-zinc-300 font-mono text-xs sm:text-sm leading-relaxed p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 space-y-2">
-              <div className="text-emerald-400 font-bold pb-1 border-b border-zinc-800/80">
-                ACTIVE CREATIONS & REPOSITORIES:
-              </div>
-              <div className="space-y-1.5 pt-1">
-                <p>
-                  <span className="text-emerald-400 font-bold">[01] LastEdge</span> — Quantitative MT5 Algorithmic Trading Platform
-                </p>
-                <p>
-                  <span className="text-cyan-400 font-bold">[02] Millionaire Sharks</span> — Web3 Community Portal (millionairesharks.com)
-                </p>
-                <p>
-                  <span className="text-purple-400 font-bold">[03] SpotifyUI</span> — Android Distraction-Free MP3 Player Revamp
-                </p>
-              </div>
-              <div className="pt-2 text-emerald-400 flex items-center gap-2">
-                <span className="animate-pulse">›</span>
-                <span>Opening holographic project deck below...</span>
-              </div>
+            <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
+              [1] LastEdge           Quantitative Trading Platform for MetaTrader 5{'\n'}
+              [2] Millionaire Sharks Web3 Community & NFT Portal (millionairesharks.com){'\n'}
+              [3] SpotifyUI          Android MP3 Player UI Transformation{'\n\n'}
+              navigating to project showcase section...
             </div>
           ),
         })
@@ -266,21 +192,20 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           id: `out-${Date.now()}`,
           type: 'output',
           content: (
-            <div className="text-zinc-300 font-mono text-xs sm:text-sm leading-relaxed p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 space-y-1.5">
-              <div className="text-emerald-400 font-bold pb-1 border-b border-zinc-800/80">
-                CONNECTED SOCIAL CHANNELS:
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 pt-1">
-                <p><span className="text-zinc-500 w-20 inline-block">instagram:</span> <a href="https://instagram.com/imlast999" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline">@imlast999</a></p>
-                <p><span className="text-zinc-500 w-20 inline-block">twitter:</span> <a href="https://twitter.com/imlast999" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline">@imlast999</a></p>
-                <p><span className="text-zinc-500 w-20 inline-block">tiktok:</span> <a href="https://tiktok.com/@imlast999_" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline">@imlast999_</a></p>
-                <p><span className="text-zinc-500 w-20 inline-block">telegram:</span> <a href="https://t.me/imlast999" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline">t.me/imlast999</a></p>
-                <p><span className="text-zinc-500 w-20 inline-block">github:</span> <a href="https://github.com/imlast999" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline">github.com/imlast999</a></p>
-                <p><span className="text-zinc-500 w-20 inline-block">twitch:</span> <a href="https://twitch.tv/imlast999" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline">twitch.tv/imlast999</a></p>
-                <p><span className="text-zinc-500 w-20 inline-block">ethereum:</span> <span className="text-zinc-300">0x223204...DE13f</span></p>
-                <p><span className="text-zinc-500 w-20 inline-block">spotify:</span> <a href="https://open.spotify.com/user/31ezp7nbkqtopvtodymrdipbr22m" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline">open.spotify.com</a></p>
-                <p><span className="text-zinc-500 w-20 inline-block">axiom:</span> <a href="https://axiom.trade/@imlast999" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline">axiom.trade/@imlast999</a></p>
-              </div>
+            <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
+              instagram  https://instagram.com/imlast999{'\n'}
+              twitter    https://twitter.com/imlast999{'\n'}
+              tiktok     https://tiktok.com/@imlast999_{'\n'}
+              telegram   https://t.me/imlast999{'\n'}
+              twitch     https://twitch.tv/imlast999{'\n'}
+              spotify    https://open.spotify.com/user/31ezp7nbkqtopvtodymrdipbr22m{'\n'}
+              steam      https://steamcommunity.com/id/imlast999{'\n'}
+              roblox     https://roblox.com/users/1193901121/profile{'\n'}
+              github     https://github.com/imlast999{'\n'}
+              ethereum   0x2232047f31888e6EAdC21d920E8FC4BD3ccDE13f{'\n'}
+              abstract   https://portal.abs.xyz/profile/0x73c83FD4803095f2da1D2b4C74D6332abbd100AD{'\n'}
+              fomo       https://fomo.family/r/imlast999{'\n'}
+              axiom      https://axiom.trade/@imlast999
             </div>
           ),
         })
@@ -291,15 +216,10 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           id: `out-${Date.now()}`,
           type: 'output',
           content: (
-            <div className="text-zinc-300 font-mono text-xs sm:text-sm leading-relaxed p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 space-y-1.5">
-              <div className="text-emerald-400 font-bold pb-1 border-b border-zinc-800/80">
-                DIRECT COMMUNICATIONS:
-              </div>
-              <div className="space-y-1 pt-1">
-                <p><span className="text-zinc-500 w-24 inline-block">Email:</span> <a href="mailto:lxstbrexthe@gmail.com" className="text-emerald-400 hover:underline">lxstbrexthe@gmail.com</a></p>
-                <p><span className="text-zinc-500 w-24 inline-block">Telegram:</span> <a href="https://t.me/imlast999" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline">@imlast999</a></p>
-                <p><span className="text-zinc-500 w-24 inline-block">Twitter/X:</span> <a href="https://twitter.com/imlast999" target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline">@imlast999</a></p>
-              </div>
+            <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
+              email:    lxstbrexthe@gmail.com{'\n'}
+              telegram: @imlast999 (https://t.me/imlast999){'\n'}
+              twitter:  @imlast999 (https://twitter.com/imlast999)
             </div>
           ),
         })
@@ -310,18 +230,10 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           id: `out-${Date.now()}`,
           type: 'output',
           content: (
-            <div className="text-zinc-300 font-mono text-xs sm:text-sm leading-relaxed space-y-1 py-1">
-              <div className="text-zinc-500 border-b border-zinc-800/80 pb-1">COMMAND HISTORY:</div>
-              {commandHistory.length === 0 ? (
-                <p className="text-zinc-500">No commands in session history.</p>
-              ) : (
-                commandHistory.map((c, i) => (
-                  <p key={i}>
-                    <span className="text-zinc-500 inline-block w-8">{i + 1}</span>
-                    <span className="text-emerald-400">{c}</span>
-                  </p>
-                ))
-              )}
+            <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
+              {commandHistory.length === 0
+                ? 'No commands in session history.'
+                : commandHistory.map((c, i) => `  ${i + 1}  ${c}`).join('\n')}
             </div>
           ),
         })
@@ -334,9 +246,8 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           type: 'error',
           content: (
             <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
-              [sudo] password for visitor: **********
-              {'\n'}
-              <span className="text-red-400">zsh: permission denied: visitor is not in the sudoers configuration.</span>
+              [sudo] password for visitor: **********{'\n'}
+              zsh: permission denied: visitor is not in the sudoers configuration.
             </div>
           ),
         })
@@ -348,7 +259,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           id: `out-${Date.now()}`,
           type: 'output',
           content: (
-            <div className="text-zinc-300 font-mono text-xs sm:text-sm">
+            <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap">
               Linux imlast999-station 6.8.0-void-space x86_64 GNU/Linux
             </div>
           ),
@@ -361,12 +272,8 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           id: `out-${Date.now()}`,
           type: 'output',
           content: (
-            <div className="text-zinc-300 font-mono text-xs sm:text-sm flex flex-wrap gap-4 py-1">
-              <span className="text-cyan-400 font-bold">about.txt</span>
-              <span className="text-cyan-400 font-bold">contact.md</span>
-              <span className="text-emerald-400 font-bold">projects/</span>
-              <span className="text-zinc-400">setup.log</span>
-              <span className="text-amber-400 font-bold">skills.json</span>
+            <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap">
+              about.txt   contact.md   projects/   setup.log   skills.json
             </div>
           ),
         })
@@ -394,16 +301,12 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           id: `out-${Date.now()}`,
           type: 'matrix',
           content: (
-            <div className="text-emerald-400 font-mono text-xs leading-tight select-none py-1 space-y-1">
-              <p>[matrix] initializing stream sequence...</p>
-              <p className="text-emerald-500 font-bold tracking-widest">
-                01001001 01001100 01000001 01010011 01010100 00111001 00111001 00111001
-              </p>
-              <p className="text-emerald-300">
-                01110110 01101111 01101001 01100100 00101101 01110011 01110000 01100001 01100011
-              </p>
-              <p className="text-white font-bold">wake up, Neo... the Matrix has you.</p>
-              <p className="text-emerald-500">[matrix] stream complete.</p>
+            <div className="text-emerald-400 font-mono text-xs whitespace-pre-wrap leading-tight select-none">
+              [matrix] initializing stream sequence...{'\n'}
+              01001001 01001100 01000001 01010011 01010100 00111001 00111001 00111001{'\n'}
+              01110110 01101111 01101001 01100100 00101101 01110011 01110000 01100001 01100011{'\n'}
+              wake up, Neo... the Matrix has you.{'\n'}
+              [matrix] stream complete.
             </div>
           ),
         })
@@ -422,8 +325,8 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           id: `err-${Date.now()}`,
           type: 'error',
           content: (
-            <div className="text-red-400 font-mono text-xs sm:text-sm">
-              zsh: command not found: <span className="text-white font-bold">{rawCmd}</span>. Type <span className="text-emerald-400 font-bold">help</span> to view commands.
+            <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap">
+              zsh: command not found: {rawCmd}
             </div>
           ),
         })
@@ -493,10 +396,8 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
             id: `out-${Date.now()}`,
             type: 'output',
             content: (
-              <div className="text-zinc-400 font-mono text-xs flex flex-wrap gap-4 py-1">
-                {matches.map((m) => (
-                  <span key={m} className="text-emerald-400 font-bold">{m}</span>
-                ))}
+              <div className="text-zinc-400 font-mono text-xs whitespace-pre-wrap">
+                {matches.join('   ')}
               </div>
             ),
           },
@@ -545,13 +446,13 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
         <div
           ref={contentBodyRef}
           onClick={() => inputRef.current?.focus()}
-          className="p-4 sm:p-5 font-mono text-xs sm:text-sm min-h-[280px] max-h-[460px] overflow-y-auto space-y-3 cursor-text bg-[#07070a]/95 relative z-10"
+          className="p-4 sm:p-5 font-mono text-xs sm:text-sm min-h-[280px] max-h-[460px] overflow-y-auto space-y-2 cursor-text bg-[#07070a]/95 relative z-10"
         >
           {history.map((item) => (
-            <div key={item.id} className="space-y-1">
+            <div key={item.id} className="space-y-0.5">
               {item.type === 'input' && (
                 <div className="flex items-center gap-2 text-zinc-300">
-                  <span className="text-emerald-400 font-bold whitespace-nowrap">imlast999@is-a.dev ~ %</span>
+                  <span className="text-emerald-400 font-bold whitespace-nowrap select-none">imlast999@is-a.dev ~ %</span>
                   <span className="text-white font-medium">{item.command}</span>
                 </div>
               )}
@@ -559,27 +460,32 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
             </div>
           ))}
 
-          {/* Active Input Line with authentic blinking block cursor */}
-          <form onSubmit={handleSubmit} className="flex items-center gap-2 pt-1.5">
-            <span className="text-emerald-400 font-bold whitespace-nowrap">
+          {/* Active Input Line with authentic inline green block cursor */}
+          <form onSubmit={handleSubmit} className="flex items-center gap-2 pt-1">
+            <span className="text-emerald-400 font-bold whitespace-nowrap select-none">
               imlast999@is-a.dev ~ %
             </span>
-            <div className="flex-1 flex items-center relative">
+            <div 
+              className="flex-1 flex items-center relative cursor-text min-h-[20px]"
+              onClick={() => inputRef.current?.focus()}
+            >
+              <span className="text-white whitespace-pre font-mono text-xs sm:text-sm">
+                {inputVal}
+              </span>
+              {/* Authentic thick green block cursor right after the typed text */}
+              <span className="inline-block w-2.5 h-4 bg-emerald-400 animate-terminal-cursor shadow-[0_0_8px_rgba(52,211,153,0.8)] select-none shrink-0" />
               <input
                 ref={inputRef}
                 type="text"
                 value={inputVal}
                 onChange={(e) => setInputVal(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder=""
-                className="w-full bg-transparent border-none outline-none text-white font-mono text-xs sm:text-sm focus:ring-0 p-0"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-text pointer-events-auto"
                 autoCapitalize="none"
                 autoComplete="off"
                 spellCheck="false"
-                autoFocus={false}
+                autoFocus
               />
-              {/* Terminal realistic blinking cursor indicator at end of prompt */}
-              <span className="animate-terminal-cursor w-2 h-4 bg-emerald-400 inline-block ml-1 shadow-[0_0_8px_rgba(52,211,153,0.8)] pointer-events-none" />
             </div>
           </form>
         </div>
