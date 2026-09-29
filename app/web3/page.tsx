@@ -14,7 +14,7 @@ const PROTOCOL_ITEMS = [
   {
     id: 'axiom',
     title: 'Axiom',
-    sub: 'Trading profesional de memecoins con control granular de fees y órdenes limit para micro-portfolios.',
+    sub: 'Professional memecoin trading platform with granular fee customization and limit orders for micro-portfolios.',
     handle: '@imlast999',
     url: AXIOM_PROFILE,
     status: 'PRO TRADING',
@@ -24,7 +24,7 @@ const PROTOCOL_ITEMS = [
   {
     id: 'fomo',
     title: 'FOMO Social',
-    sub: 'Social trading de memecoins: alertas de swaps en tiempo real y tesis públicas sobre tokens de creadores seguidos.',
+    sub: 'Social memecoin trading: real-time swap alert feeds and creator investment theses on tracked tokens.',
     handle: 'fomo.family/r/imlast999',
     url: FOMO_URL,
     status: 'SOCIAL TRADING',
@@ -34,7 +34,7 @@ const PROTOCOL_ITEMS = [
   {
     id: 'abstract',
     title: 'Abstract L2',
-    sub: 'EVM Layer 2 de Pudgy Penguins (AGW). Holder de Dreamilio NFT y $PENGU para airdrop, con directos esporádicos.',
+    sub: 'EVM Layer 2 by Pudgy Penguins (AGW). Holding Dreamilio NFT & $PENGU for ecosystem qualification.',
     handle: '0x73c8...100AD',
     url: ABSTRACT_PROFILE,
     status: 'PUDGY L2 // AGW',
@@ -44,17 +44,17 @@ const PROTOCOL_ITEMS = [
   {
     id: 'sharks',
     title: 'Millionaire Sharks',
-    sub: 'Proyecto propio: culto y lore de tiburones millonarios. Fase comunitaria previa al launch del token $MSC y 5.000 NFTs.',
+    sub: 'Independent web3 collective: exclusive digital community portal crafted from scratch.',
     handle: 'millionairesharks.com',
     url: SHARKS_URL,
-    status: 'FOUNDER // $MSC',
+    status: 'CO-FOUNDER',
     tagColor: 'bg-amber-400 text-black',
     actionLabel: 'WEBSITE',
   },
   {
     id: 'layerzero',
     title: 'LayerZero Scan',
-    sub: 'Registro de transferencias omnichain, mensajería y puentes cross-chain de la wallet entre L1s y Layer 2s.',
+    sub: 'Omnichain transfer registry, cross-chain messaging telemetry, and multi-network bridge explorer.',
     handle: 'layerzeroscan.com',
     url: L0_SCAN_URL,
     status: 'OMNIX SCANNER',

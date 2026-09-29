@@ -55,7 +55,7 @@ const PROJECTS: Project[] = [
     highlights: [
       'Interactive community & roadmap experience',
       'Optimized high-speed responsive Web3 architecture',
-      'Digital asset showcases and ecosystem portal navigation',
+      'Digital portal navigation and brand collective',
     ],
   },
   {
