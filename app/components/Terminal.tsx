@@ -212,7 +212,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           content: (
             <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
               [1] LastEdge           Quantitative Trading Platform for MetaTrader 5{'\n'}
-              [2] Millionaire Sharks Web3 Community Portal (millionairesharks.com){'\n'}
+              [2] Millionaire Sharks Syndicate Web3 Hub & Arcade (millionairesharks.com){'\n'}
               [3] SpotifyUI          Android MP3 Player UI Transformation{'\n\n'}
               navigating to project showcase section...
             </div>

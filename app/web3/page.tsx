@@ -44,12 +44,12 @@ const PROTOCOL_ITEMS = [
   {
     id: 'sharks',
     title: 'Millionaire Sharks',
-    sub: 'Independent web3 collective: exclusive digital community portal crafted from scratch.',
+    sub: 'Official Web3 syndicate ecosystem: EVM whitelist engine, 10-character lore universe, 60 FPS Canvas arcade runner ("Bankscape"), and IP-locked leaderboard.',
     handle: 'millionairesharks.com',
     url: SHARKS_URL,
-    status: 'CO-FOUNDER',
+    status: 'CO-FOUNDER // ARCADE',
     tagColor: 'bg-amber-400 text-black',
-    actionLabel: 'WEBSITE',
+    actionLabel: 'PORTAL',
   },
   {
     id: 'layerzero',
