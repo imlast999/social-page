@@ -12,49 +12,54 @@ const L0_SCAN_URL = `https://layerzeroscan.com/address/${EVM_ADDRESS}`
 
 const PROTOCOL_ITEMS = [
   {
-    num: '01',
+    id: 'axiom',
     title: 'Axiom',
     sub: 'Quantitative derivatives & on-chain analytics profile',
     handle: '@imlast999',
     url: AXIOM_PROFILE,
     status: 'ACTIVE',
     tagColor: 'bg-emerald-400 text-black',
+    actionLabel: 'OPEN',
   },
   {
-    num: '02',
+    id: 'abstract',
     title: 'Abstract L2',
     sub: 'Consumer crypto on-chain identity & smart accounts',
     handle: '0x73c8...100AD',
     url: ABSTRACT_PROFILE,
     status: 'CONNECTED',
     tagColor: 'bg-cyan-400 text-black',
+    actionLabel: 'OPEN',
   },
   {
-    num: '03',
+    id: 'sharks',
     title: 'Millionaire Sharks',
     sub: 'Web3 digital collective portal & NFT architecture',
     handle: 'millionairesharks.com',
     url: SHARKS_URL,
     status: 'PRODUCTION',
     tagColor: 'bg-amber-400 text-black',
+    actionLabel: 'OPEN',
   },
   {
-    num: '04',
+    id: 'fomo',
     title: 'FOMO Social',
     sub: 'Decentralized social connectivity & invitation network',
     handle: 'imlast999',
     url: FOMO_URL,
     status: 'VERIFIED',
     tagColor: 'bg-purple-400 text-black',
+    actionLabel: 'OPEN',
   },
   {
-    num: 'BONUS',
+    id: 'layerzero',
     title: 'LayerZero Omnichain',
     sub: 'Cross-chain messaging & multi-network state',
     handle: 'layerzeroscan.com',
     url: L0_SCAN_URL,
     status: 'SCANNER',
     tagColor: 'bg-white text-black',
+    actionLabel: 'SCAN',
   },
 ]
 
@@ -194,48 +199,41 @@ export default function Web3Page() {
             </button>
           </div>
 
-          {/* Protocol Items List (01, 02, 03, 04, BONUS) */}
+          {/* Protocol Items List */}
           <div className="space-y-4 pt-2">
             {PROTOCOL_ITEMS.map((item, index) => (
               <div
-                key={item.num}
+                key={item.id}
                 ref={(el) => { sectionRefs.current[index + 2] = el }}
                 className="pt-4 border-t border-zinc-800 first:border-t-0 first:pt-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3 group transition-all duration-300 opacity-100"
               >
-                <div className="flex items-start gap-4">
-                  {/* Item Number Box */}
-                  <span className="font-pixel text-xs text-zinc-400 tracking-wider pt-0.5 select-none shrink-0 w-8">
-                    {item.num}
-                  </span>
-
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-pixel text-xs sm:text-sm text-white group-hover:text-zinc-200 transition-colors">
-                        {item.title}
-                      </h3>
-                      <span className={`text-[9px] font-pixel px-1.5 py-0.5 border border-black ${item.tagColor}`}>
-                        {item.status}
-                      </span>
-                    </div>
-
-                    <p className="text-[11px] text-zinc-400 font-mono leading-relaxed">
-                      {item.sub}
-                    </p>
-
-                    <span className="text-[10px] text-zinc-500 font-mono block">
-                      {item.handle}
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-pixel text-xs sm:text-sm text-white group-hover:text-zinc-200 transition-colors">
+                      {item.title}
+                    </h3>
+                    <span className={`text-[9px] font-pixel px-1.5 py-0.5 border border-black ${item.tagColor}`}>
+                      {item.status}
                     </span>
                   </div>
+
+                  <p className="text-[11px] text-zinc-400 font-mono leading-relaxed">
+                    {item.sub}
+                  </p>
+
+                  <span className="text-[10px] text-zinc-500 font-mono block">
+                    {item.handle}
+                  </span>
                 </div>
 
-                {/* 16-Bit Action Button [OPEN ↗] like Hoodbits */}
+                {/* 16-Bit Action Button [OPEN ↗] */}
                 <a
                   href={item.url}
                   target="_blank"
                   rel="noreferrer"
                   className="px-4 py-2 bg-zinc-200 hover:bg-white text-black border-2 border-black font-pixel text-xs tracking-wider pixel-button flex items-center justify-center gap-1.5 self-start sm:self-center shrink-0 cursor-pointer"
                 >
-                  <span>{item.num === 'BONUS' ? 'SCAN' : 'OPEN'}</span>
+                  <span>{item.actionLabel}</span>
                   <span className="text-[10px]">↗</span>
                 </a>
               </div>
