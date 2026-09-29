@@ -114,15 +114,20 @@ export default function Web3Page() {
         {/* ======================================================== */}
         <header className="flex items-center justify-between border-b-2 border-zinc-800 pb-4">
           <div className="flex items-center gap-3">
-            {/* Pixel Character Icon Box */}
-            <div className="w-8 h-8 rounded-none bg-zinc-200 border-2 border-black flex items-center justify-center pixel-shadow-sm">
-              <div className="w-4 h-4 bg-black flex items-center justify-center">
-                <div className="w-1.5 h-1.5 bg-zinc-200" />
-              </div>
+            {/* 16-Bit Low-Res Favicon Icon */}
+            <div className="w-8 h-8 rounded-none bg-black border-2 border-zinc-300 flex items-center justify-center pixel-shadow-sm overflow-hidden p-0.5">
+              <img
+                src="/favicon.ico"
+                alt="imlast999 pixel icon"
+                width={24}
+                height={24}
+                className="w-full h-full object-contain [image-rendering:pixelated]"
+                style={{ imageRendering: 'pixelated' }}
+              />
             </div>
             
             <span className="font-pixel text-sm sm:text-base tracking-wider text-white">
-              IMLAST999_
+              IMLAST999
             </span>
           </div>
 
@@ -165,27 +170,6 @@ export default function Web3Page() {
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
-          {/* Top Progress Bar & Header (Bits 4/4 like in reference image) */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <span className="font-pixel text-xs tracking-wider text-zinc-200">
-              PROTOCOLS 4/4
-            </span>
-
-            {/* 16-Bit Pixel Segmented Progress Bar */}
-            <div className="w-full sm:w-56 h-5 border-2 border-zinc-300 bg-black p-0.5 flex">
-              <div className="h-full w-full bg-zinc-200 flex items-center justify-between px-1">
-                <span className="w-1 h-full bg-black/20" />
-                <span className="w-1 h-full bg-black/20" />
-                <span className="w-1 h-full bg-black/20" />
-                <span className="w-1 h-full bg-black/20" />
-                <span className="w-1 h-full bg-black/20" />
-              </div>
-            </div>
-          </div>
-
-          {/* 16-Bit Dashed Divider */}
-          <div className="border-b-2 border-dashed border-zinc-700 my-2" />
-
           {/* Root Address Display inside container */}
           <div className="p-3.5 bg-black border-2 border-zinc-700 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pixel-shadow-sm">
             <div className="space-y-1 min-w-0">
