@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -126,5 +127,63 @@ body {
   border: 1px solid #6ee7b7;
   cursor: pointer;
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+/* 16-Bit Pixel Typography */
+.font-pixel {
+  font-family: 'Press Start 2P', monospace;
+}
+
+.font-silkscreen {
+  font-family: 'Silkscreen', monospace;
+}
+
+/* 16-bit Hard Retro Pixel Shadows */
+.pixel-shadow {
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.pixel-shadow-sm {
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.pixel-shadow-zinc {
+  box-shadow: 4px 4px 0px #27272a;
+}
+
+.pixel-shadow-white {
+  box-shadow: 3px 3px 0px #ffffff;
+}
+
+/* 16-bit Chunky Button Interaction */
+.pixel-button {
+  box-shadow: 3px 3px 0px #000000;
+  transition: transform 0.06s ease, box-shadow 0.06s ease;
+}
+
+.pixel-button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.pixel-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+/* 16-bit Scroll Reveal / Fade-in */
+@keyframes pixelFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-pixel-fade {
+  animation: pixelFadeIn 0.4s ease-out forwards;
 }
 

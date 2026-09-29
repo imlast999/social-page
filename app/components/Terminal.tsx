@@ -20,7 +20,6 @@ const AVAILABLE_COMMANDS = [
   'projects',
   'socials',
   'web3',
-  'void',
   'contact',
   'whoami',
   'uname',
@@ -107,7 +106,6 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
               {'  '}projects    featured applications and repos{'\n'}
               {'  '}socials     connected network endpoints{'\n'}
               {'  '}web3        open decentralized on-chain hub{'\n'}
-              {'  '}void        warp to the void point-and-click adventure{'\n'}
               {'  '}contact     direct communication channels{'\n'}
               {'  '}whoami      print current user identity{'\n'}
               {'  '}uname       print system kernel and architecture{'\n'}
@@ -302,8 +300,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           content: (
             <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
               [sudo] password for visitor: **********{'\n'}
-              <span className="text-red-400">zsh: permission denied: visitor is not in the sudoers configuration.</span>{'\n'}
-              <span className="text-zinc-500 text-xs">Hint: Seek the root cipher in /void</span>
+              <span className="text-red-400">zsh: permission denied: visitor is not in the sudoers configuration.</span>
             </div>
           ),
         })
@@ -329,7 +326,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
           type: 'output',
           content: (
             <div className="text-zinc-300 font-mono text-xs sm:text-sm whitespace-pre-wrap">
-              about.txt   contact.md   projects/   setup.log   skills.json   web3/   void/
+              about.txt   contact.md   projects/   setup.log   skills.json   web3/
             </div>
           ),
         })
