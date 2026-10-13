@@ -505,7 +505,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
         {/* Terminal Output Body */}
         <div
           ref={contentBodyRef}
-          onClick={() => inputRef.current?.focus()}
+          onClick={() => inputRef.current?.focus({ preventScroll: true })}
           className="p-4 sm:p-5 font-mono text-xs sm:text-sm min-h-[280px] max-h-[460px] overflow-y-auto space-y-2 cursor-text bg-[#07070a]/95 relative z-10"
         >
           {history.map((item) => (
@@ -533,7 +533,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
             </span>
             <div 
               className="flex-1 flex items-center relative cursor-text min-h-[20px]"
-              onClick={() => inputRef.current?.focus()}
+              onClick={() => inputRef.current?.focus({ preventScroll: true })}
             >
               <span className="text-white whitespace-pre font-mono text-xs sm:text-sm">
                 {inputVal}
@@ -552,7 +552,6 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
                 autoCapitalize="none"
                 autoComplete="off"
                 spellCheck="false"
-                autoFocus
               />
             </div>
           </form>
