@@ -238,7 +238,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
               steam      https://steamcommunity.com/id/imlast999{'\n'}
               roblox     https://roblox.com/users/1193901121/profile{'\n'}
               github     https://github.com/imlast999{'\n'}
-              EVM wallet 0x2232047f31888e6EAdC21d920E8FC4BD3ccDE13f{'\n'}
+              evm wallet 0x2232047f31888e6EAdC21d920E8FC4BD3ccDE13f{'\n'}
               solana     Cf9T6dy3job16JEvGF1pw8qe3u9BGsMkDuXEc7XCwhCE{'\n'}
               alpha gc   https://t.me/notalphagc{'\n'}
               fomo       https://fomo.family/r/imlast999{'\n'}

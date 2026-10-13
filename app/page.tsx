@@ -87,7 +87,7 @@ const SOCIAL_ITEMS: SocialItem[] = [
   },
   {
     id: 'ethereum',
-    label: 'EVM wallet',
+    label: 'evm wallet',
     isAction: true,
     walletAddress: '0x2232047f31888e6EAdC21d920E8FC4BD3ccDE13f',
     brandColor: '#627EEA',
@@ -785,7 +785,7 @@ export default function SocialLinksMatrix() {
                 {/* Main word letters with scatter & hover brand color */}
                 <span
                   className={cn(
-                    'fancy-word inline-flex items-center text-4xl sm:text-5xl md:text-6xl font-medium tracking-normal transition-colors duration-250',
+                    'fancy-word inline-flex items-center text-4xl sm:text-5xl md:text-6xl font-medium lowercase tracking-normal transition-colors duration-250',
                     isCopied
                       ? 'text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.5)]'
                       : 'text-white'
