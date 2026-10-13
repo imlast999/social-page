@@ -95,8 +95,8 @@ const SOCIAL_ITEMS: SocialItem[] = [
   },
   {
     id: 'tggc',
-    label: 'tg gc',
-    href: 'https://t.me/+4tSwSBriH1s2Y2M0',
+    label: 'alpha gc',
+    href: 'https://t.me/notalphagc',
     brandColor: '#24A1DE',
     glowColor: 'rgba(36, 161, 222, 0.4)',
   },

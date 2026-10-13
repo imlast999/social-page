@@ -13,7 +13,7 @@ Página minimalista de enlaces sociales interactivos con animación de letras di
 - `roblox`
 - `github`
 - `ethereum` *(Copia automática de dirección de wallet al portapapeles)*
-- `tg gc` *(Chat de Telegram para calls y setups)*
+- `alpha gc` *(Chat de Telegram para calls y setups: https://t.me/notalphagc)*
 - `fomo`
 - `axiom`
 

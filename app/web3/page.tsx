@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 
 const EVM_ADDRESS = '0x2232047f31888e6EAdC21d920E8FC4BD3ccDE13f'
-const TG_GC_URL = 'https://t.me/+4tSwSBriH1s2Y2M0'
+const TG_GC_URL = 'https://t.me/notalphagc'
 const AXIOM_PROFILE = 'https://axiom.trade/@imlast999'
 const SHARKS_URL = 'https://millionairesharks.com'
 const FOMO_URL = 'https://fomo.family/r/imlast999'
@@ -33,9 +33,9 @@ const PROTOCOL_ITEMS = [
   },
   {
     id: 'tggc',
-    title: 'TG Calls & Alpha GC',
-    sub: 'Private Telegram syndicate chat for real-time memecoin calls, trade setups, and alpha sharing.',
-    handle: 't.me/+4tSwSBriH1s2Y2M0',
+    title: 'alpha gc (trump do ur thing)',
+    sub: 'Private memecoin calls & alpha syndicate. Meme market sentiment, live signals, and degenerate trade setups.',
+    handle: 't.me/notalphagc',
     url: TG_GC_URL,
     status: 'TG GC // ALPHA',
     tagColor: 'bg-sky-400 text-black',

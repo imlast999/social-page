@@ -239,7 +239,7 @@ export default function Terminal({ onExploreProjects }: TerminalProps) {
               roblox     https://roblox.com/users/1193901121/profile{'\n'}
               github     https://github.com/imlast999{'\n'}
               ethereum   0x2232047f31888e6EAdC21d920E8FC4BD3ccDE13f{'\n'}
-              tg gc      https://t.me/+4tSwSBriH1s2Y2M0{'\n'}
+              alpha gc   https://t.me/notalphagc{'\n'}
               fomo       https://fomo.family/r/imlast999{'\n'}
               axiom      https://axiom.trade/@imlast999
             </div>
