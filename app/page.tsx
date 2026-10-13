@@ -98,8 +98,8 @@ const SOCIAL_ITEMS: SocialItem[] = [
     label: 'solana',
     isAction: true,
     walletAddress: 'Cf9T6dy3job16JEvGF1pw8qe3u9BGsMkDuXEc7XCwhCE',
-    brandColor: '#14F195',
-    glowColor: 'rgba(20, 241, 149, 0.4)',
+    brandColor: '#1FDEB0',
+    glowColor: 'rgba(209, 40, 251, 0.4)',
   },
   {
     id: 'tggc',
@@ -140,6 +140,17 @@ const SCATTER_PRESETS = [
 
 function getScatterTransform(index: number) {
   return SCATTER_PRESETS[index % SCATTER_PRESETS.length]
+}
+
+function getSolanaColor(index: number, total: number) {
+  // Gradient from #D128FB (209, 40, 251) to #1FDEB0 (31, 222, 176)
+  const start = [209, 40, 251]
+  const end = [31, 222, 176]
+  const t = total > 1 ? index / (total - 1) : 0
+  const r = Math.round(start[0] + (end[0] - start[0]) * t)
+  const g = Math.round(start[1] + (end[1] - start[1]) * t)
+  const b = Math.round(start[2] + (end[2] - start[2]) * t)
+  return `rgb(${r}, ${g}, ${b})`
 }
 
 interface ItemPos {
@@ -786,6 +797,8 @@ export default function SocialLinksMatrix() {
                     background:
                       item.id === 'tiktok'
                         ? 'radial-gradient(ellipse at center, rgba(37, 244, 238, 0.3) 0%, rgba(254, 44, 85, 0.3) 60%, transparent 80%)'
+                        : item.id === 'solana'
+                        ? 'radial-gradient(ellipse at center, rgba(209, 40, 251, 0.35) 0%, rgba(31, 222, 176, 0.35) 60%, transparent 80%)'
                         : `radial-gradient(circle, ${item.glowColor} 0%, transparent 70%)`,
                   }}
                 />
@@ -806,6 +819,8 @@ export default function SocialLinksMatrix() {
                         i < 3
                           ? 'group-hover:text-[#25F4EE]'
                           : 'group-hover:text-[#FE2C55]'
+                    } else if (item.id === 'solana') {
+                      hoverColor = 'group-hover:text-[var(--solana-char-color)]'
                     }
                     return (
                       <span key={i} className="scatter-outer inline-block">
@@ -815,6 +830,11 @@ export default function SocialLinksMatrix() {
                               'inline-block transition-colors duration-200',
                               hoverColor
                             )}
+                            style={
+                              item.id === 'solana'
+                                ? ({ '--solana-char-color': getSolanaColor(i, letters.length) } as React.CSSProperties)
+                                : undefined
+                            }
                           >
                             {char === ' ' ? '\u00A0' : char}
                           </span>

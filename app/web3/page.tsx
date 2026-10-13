@@ -212,7 +212,7 @@ export default function Web3Page() {
             {/* Solana Wallet */}
             <div className="p-3.5 bg-black border-2 border-zinc-700 flex flex-col justify-between gap-3 pixel-shadow-sm">
               <div className="space-y-1 min-w-0">
-                <span className="text-[10px] font-pixel text-emerald-400 uppercase tracking-widest block">
+                <span className="text-[10px] font-pixel bg-gradient-to-r from-[#D128FB] to-[#1FDEB0] bg-clip-text text-transparent uppercase tracking-widest block font-bold">
                   SOLANA WALLET // MAINNET
                 </span>
                 <span className="text-xs sm:text-sm font-mono text-zinc-200 truncate block select-all">
@@ -226,7 +226,7 @@ export default function Web3Page() {
                 className={`px-3 py-1.5 border-2 border-black font-pixel text-[11px] tracking-wider pixel-button transition-all cursor-pointer self-start sm:self-end ${
                   copiedSol
                     ? 'bg-emerald-400 text-black font-bold'
-                    : 'bg-emerald-400 text-black hover:bg-emerald-300'
+                    : 'bg-gradient-to-r from-[#D128FB] to-[#1FDEB0] text-black font-bold hover:brightness-110'
                 }`}
               >
                 {copiedSol ? 'COPIED! ✓' : 'COPY [⧉]'}
