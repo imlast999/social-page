@@ -11,8 +11,8 @@ Página minimalista de enlaces sociales interactivos con animación de letras di
 - `spotify`
 - `steam`
 - `roblox`
-- `github`
-- `ethereum` *(Copia automática de dirección de wallet al portapapeles)*
+- `EVM wallet` *(0x2232047f31888e6EAdC21d920E8FC4BD3ccDE13f - Copia automática de dirección EVM al portapapeles)*
+- `solana` *(Cf9T6dy3job16JEvGF1pw8qe3u9BGsMkDuXEc7XCwhCE - Copia automática de dirección Solana al portapapeles)*
 - `alpha gc` *(Chat de Telegram para calls y setups: https://t.me/notalphagc)*
 - `fomo`
 - `axiom`

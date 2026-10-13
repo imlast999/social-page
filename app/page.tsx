@@ -16,7 +16,7 @@ export interface SocialItem {
   label: string
   href?: string
   isAction?: boolean
-  ethAddress?: string
+  walletAddress?: string
   brandColor: string
   glowColor: string
 }
@@ -87,11 +87,19 @@ const SOCIAL_ITEMS: SocialItem[] = [
   },
   {
     id: 'ethereum',
-    label: 'ethereum',
+    label: 'EVM wallet',
     isAction: true,
-    ethAddress: '0x2232047f31888e6EAdC21d920E8FC4BD3ccDE13f',
+    walletAddress: '0x2232047f31888e6EAdC21d920E8FC4BD3ccDE13f',
     brandColor: '#627EEA',
     glowColor: 'rgba(98, 126, 234, 0.4)',
+  },
+  {
+    id: 'solana',
+    label: 'solana',
+    isAction: true,
+    walletAddress: 'Cf9T6dy3job16JEvGF1pw8qe3u9BGsMkDuXEc7XCwhCE',
+    brandColor: '#14F195',
+    glowColor: 'rgba(20, 241, 149, 0.4)',
   },
   {
     id: 'tggc',
@@ -179,7 +187,7 @@ export default function SocialLinksMatrix() {
   const floatRefs = useRef<Map<string, HTMLElement>>(new Map())
   const [positions, setPositions] = useState<Record<string, ItemPos>>({})
   const [heroHeight, setHeroHeight] = useState<number>(850)
-  const [copiedEth, setCopiedEth] = useState(false)
+  const [copiedWalletId, setCopiedWalletId] = useState<string | null>(null)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
   const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -618,31 +626,29 @@ export default function SocialLinksMatrix() {
     })
   }, [positions, mounted])
 
-  // Ethereum Copy Handler
-  const handleCopyEthereum = () => {
-    const ethAddress = '0x2232047f31888e6EAdC21d920E8FC4BD3ccDE13f'
-
+  // Wallet Copy Handler (EVM & Solana)
+  const handleCopyWallet = (address: string, label: string, id: string) => {
     const triggerSuccess = () => {
-      setCopiedEth(true)
-      setToastMessage(`ethereum wallet copied: ${ethAddress}`)
+      setCopiedWalletId(id)
+      setToastMessage(`${label} copied: ${address}`)
 
       if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current)
       toastTimeoutRef.current = setTimeout(() => {
-        setCopiedEth(false)
+        setCopiedWalletId(null)
         setToastMessage(null)
       }, 3000)
     }
 
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard
-        .writeText(ethAddress)
+        .writeText(address)
         .then(triggerSuccess)
         .catch(() => {
-          fallbackCopy(ethAddress)
+          fallbackCopy(address)
           triggerSuccess()
         })
     } else {
-      fallbackCopy(ethAddress)
+      fallbackCopy(address)
       triggerSuccess()
     }
   }
@@ -747,8 +753,8 @@ export default function SocialLinksMatrix() {
         {/* Absolute Floating Links Container */}
         <div className="relative w-full" style={{ height: `${Math.max(heroHeight - 90, 600)}px` }}>
           {SOCIAL_ITEMS.map((item) => {
-            const isEth = item.id === 'ethereum'
-            const currentText = isEth && copiedEth ? 'copied!' : item.label
+            const isCopied = copiedWalletId === item.id
+            const currentText = isCopied ? 'copied!' : item.label
             const letters = currentText.split('')
 
             const wordElement = (
@@ -779,8 +785,8 @@ export default function SocialLinksMatrix() {
                 {/* Main word letters with scatter & hover brand color */}
                 <span
                   className={cn(
-                    'fancy-word inline-flex items-center text-4xl sm:text-5xl md:text-6xl font-medium lowercase tracking-normal transition-colors duration-250',
-                    isEth && copiedEth
+                    'fancy-word inline-flex items-center text-4xl sm:text-5xl md:text-6xl font-medium tracking-normal transition-colors duration-250',
+                    isCopied
                       ? 'text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.5)]'
                       : 'text-white'
                   )}
@@ -830,14 +836,14 @@ export default function SocialLinksMatrix() {
                 handleMouseLeave(e.currentTarget),
             }
 
-            if (isEth) {
+            if (item.isAction && item.walletAddress) {
               return (
                 <button
                   key={item.id}
                   type="button"
-                  onClick={handleCopyEthereum}
+                  onClick={() => handleCopyWallet(item.walletAddress!, item.label, item.id)}
                   className="outline-none focus:outline-none cursor-pointer bg-transparent border-none p-0 m-0 text-left z-10"
-                  aria-label="copy ethereum address"
+                  aria-label={`copy ${item.label} address`}
                   {...commonProps}
                 >
                   {wordElement}

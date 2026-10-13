@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 
 const EVM_ADDRESS = '0x2232047f31888e6EAdC21d920E8FC4BD3ccDE13f'
+const SOL_ADDRESS = 'Cf9T6dy3job16JEvGF1pw8qe3u9BGsMkDuXEc7XCwhCE'
 const TG_GC_URL = 'https://t.me/notalphagc'
 const AXIOM_PROFILE = 'https://axiom.trade/@imlast999'
 const SHARKS_URL = 'https://millionairesharks.com'
@@ -63,15 +64,16 @@ const PROTOCOL_ITEMS = [
   },
 ]
 
-const L2_SCANNERS = [
+const MULTI_SCANNERS = [
+  { name: 'Solscan', url: `https://solscan.io/account/${SOL_ADDRESS}` },
   { name: 'BaseScan', url: `https://basescan.org/address/${EVM_ADDRESS}` },
-  { name: 'OP Etherscan', url: `https://optimistic.etherscan.io/address/${EVM_ADDRESS}` },
   { name: 'DeBank', url: `https://debank.com/profile/${EVM_ADDRESS}` },
   { name: 'Etherscan', url: `https://etherscan.io/address/${EVM_ADDRESS}` },
 ]
 
 export default function Web3Page() {
-  const [copied, setCopied] = useState(false)
+  const [copiedEvm, setCopiedEvm] = useState(false)
+  const [copiedSol, setCopiedSol] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const sectionRefs = useRef<(HTMLElement | null)[]>([])
 
@@ -98,10 +100,16 @@ export default function Web3Page() {
     return () => observer.disconnect()
   }, [])
 
-  const handleCopy = () => {
+  const handleCopyEvm = () => {
     navigator.clipboard.writeText(EVM_ADDRESS)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    setCopiedEvm(true)
+    setTimeout(() => setCopiedEvm(false), 2000)
+  }
+
+  const handleCopySol = () => {
+    navigator.clipboard.writeText(SOL_ADDRESS)
+    setCopiedSol(true)
+    setTimeout(() => setCopiedSol(false), 2000)
   }
 
   return (
@@ -175,28 +183,55 @@ export default function Web3Page() {
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
-          {/* Root Address Display inside container */}
-          <div className="p-3.5 bg-black border-2 border-zinc-700 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pixel-shadow-sm">
-            <div className="space-y-1 min-w-0">
-              <span className="text-[10px] font-pixel text-zinc-400 uppercase tracking-widest block">
-                EVM & L2 ROOT WALLET
-              </span>
-              <span className="text-xs sm:text-sm font-mono text-zinc-200 truncate block select-all">
-                {EVM_ADDRESS}
-              </span>
+          {/* Root Addresses Display inside container (EVM & Solana) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {/* EVM Wallet */}
+            <div className="p-3.5 bg-black border-2 border-zinc-700 flex flex-col justify-between gap-3 pixel-shadow-sm">
+              <div className="space-y-1 min-w-0">
+                <span className="text-[10px] font-pixel text-zinc-400 uppercase tracking-widest block">
+                  EVM WALLET // L1 & L2
+                </span>
+                <span className="text-xs sm:text-sm font-mono text-zinc-200 truncate block select-all">
+                  {EVM_ADDRESS}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleCopyEvm}
+                className={`px-3 py-1.5 border-2 border-black font-pixel text-[11px] tracking-wider pixel-button transition-all cursor-pointer self-start sm:self-end ${
+                  copiedEvm
+                    ? 'bg-emerald-400 text-black font-bold'
+                    : 'bg-zinc-200 text-black hover:bg-white'
+                }`}
+              >
+                {copiedEvm ? 'COPIED! ✓' : 'COPY [⧉]'}
+              </button>
             </div>
 
-            <button
-              type="button"
-              onClick={handleCopy}
-              className={`px-4 py-2 border-2 border-black font-pixel text-xs tracking-wider pixel-button transition-all cursor-pointer shrink-0 ${
-                copied
-                  ? 'bg-emerald-400 text-black font-bold'
-                  : 'bg-zinc-200 text-black hover:bg-white'
-              }`}
-            >
-              {copied ? 'COPIED! ✓' : 'COPY [⧉]'}
-            </button>
+            {/* Solana Wallet */}
+            <div className="p-3.5 bg-black border-2 border-zinc-700 flex flex-col justify-between gap-3 pixel-shadow-sm">
+              <div className="space-y-1 min-w-0">
+                <span className="text-[10px] font-pixel text-emerald-400 uppercase tracking-widest block">
+                  SOLANA WALLET // MAINNET
+                </span>
+                <span className="text-xs sm:text-sm font-mono text-zinc-200 truncate block select-all">
+                  {SOL_ADDRESS}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleCopySol}
+                className={`px-3 py-1.5 border-2 border-black font-pixel text-[11px] tracking-wider pixel-button transition-all cursor-pointer self-start sm:self-end ${
+                  copiedSol
+                    ? 'bg-emerald-400 text-black font-bold'
+                    : 'bg-emerald-400 text-black hover:bg-emerald-300'
+                }`}
+              >
+                {copiedSol ? 'COPIED! ✓' : 'COPY [⧉]'}
+              </button>
+            </div>
           </div>
 
           {/* Protocol Items List */}
@@ -252,13 +287,13 @@ export default function Web3Page() {
         >
           <div className="flex items-center justify-between text-xs text-zinc-400">
             <span className="font-pixel text-[10px] uppercase tracking-wider">
-              L2 NETWORK EXPLORERS
+              MULTI-CHAIN EXPLORERS
             </span>
             <span className="font-mono text-[11px] text-zinc-500">4 verified</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            {L2_SCANNERS.map((sc) => (
+            {MULTI_SCANNERS.map((sc) => (
               <a
                 key={sc.name}
                 href={sc.url}
