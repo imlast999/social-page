@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 
 const EVM_ADDRESS = '0x2232047f31888e6EAdC21d920E8FC4BD3ccDE13f'
-const ABSTRACT_PROFILE = 'https://portal.abs.xyz/profile/0x73c83FD4803095f2da1D2b4C74D6332abbd100AD'
+const TG_GC_URL = 'https://t.me/+4tSwSBriH1s2Y2M0'
 const AXIOM_PROFILE = 'https://axiom.trade/@imlast999'
 const SHARKS_URL = 'https://millionairesharks.com'
 const FOMO_URL = 'https://fomo.family/r/imlast999'
@@ -32,14 +32,14 @@ const PROTOCOL_ITEMS = [
     actionLabel: 'OPEN',
   },
   {
-    id: 'abstract',
-    title: 'Abstract L2',
-    sub: 'EVM Layer 2 by Pudgy Penguins (AGW). Holding Dreamilio NFT & $PENGU for ecosystem qualification.',
-    handle: '0x73c8...100AD',
-    url: ABSTRACT_PROFILE,
-    status: 'PUDGY L2 // AGW',
-    tagColor: 'bg-cyan-400 text-black',
-    actionLabel: 'PORTAL',
+    id: 'tggc',
+    title: 'TG Calls & Alpha GC',
+    sub: 'Private Telegram syndicate chat for real-time memecoin calls, trade setups, and alpha sharing.',
+    handle: 't.me/+4tSwSBriH1s2Y2M0',
+    url: TG_GC_URL,
+    status: 'TG GC // ALPHA',
+    tagColor: 'bg-sky-400 text-black',
+    actionLabel: 'JOIN',
   },
   {
     id: 'sharks',

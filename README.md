@@ -13,8 +13,9 @@ Página minimalista de enlaces sociales interactivos con animación de letras di
 - `roblox`
 - `github`
 - `ethereum` *(Copia automática de dirección de wallet al portapapeles)*
-- `abstract`
+- `tg gc` *(Chat de Telegram para calls y setups)*
 - `fomo`
+- `axiom`
 
 ---
 

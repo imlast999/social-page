@@ -94,11 +94,11 @@ const SOCIAL_ITEMS: SocialItem[] = [
     glowColor: 'rgba(98, 126, 234, 0.4)',
   },
   {
-    id: 'abstract',
-    label: 'abstract',
-    href: 'https://portal.abs.xyz/profile/0x73c83FD4803095f2da1D2b4C74D6332abbd100AD',
-    brandColor: '#00FF88',
-    glowColor: 'rgba(0, 255, 136, 0.4)',
+    id: 'tggc',
+    label: 'tg gc',
+    href: 'https://t.me/+4tSwSBriH1s2Y2M0',
+    brandColor: '#24A1DE',
+    glowColor: 'rgba(36, 161, 222, 0.4)',
   },
   {
     id: 'fomo',
@@ -802,7 +802,7 @@ export default function SocialLinksMatrix() {
                               hoverColor
                             )}
                           >
-                            {char}
+                            {char === ' ' ? '\u00A0' : char}
                           </span>
                         </span>
                       </span>
